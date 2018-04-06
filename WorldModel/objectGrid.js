@@ -1,8 +1,9 @@
 class Grid {
-    constructor(type, x, y) {
+    constructor(type, x, y, drones={}) {
         this.type = type;
         this.sizeX = x;
         this.sizeY = y;
+        this.drones = drones;
         this.grid = createGrid(x, y);
     }
 
@@ -13,30 +14,31 @@ class Grid {
             grid[i] = new Array();
 
             for(var j = 0; j < grid[i].length; j++) {
-                grid[i].push({'drone':false, 'object':false, 'obstacle':false})
+                grid[i].push({'drone':null, 'obstacle':null,  'object':null});
             }
         }
 
-        return grid
+        return grid;
     }
 
     addDrone(id, x, y) {
-
+        this.grd[x][y].drone = id;
     }
 
     addObstacle(x, y) {
-
+        this.grd[x][y].obstacle = true;
     }
 
-    addObject(x, y) {
-
+    addObject(id, x, y) {
+        this.grd[x][y].object = id;
     }
 
     moveDrone(id, x, y) {
+        drone = this.drones.id;
+        this.grid[drone.x][drone.y].drone = null;
 
-    }
-
-    dispatchAction(id, object) {
-
+        this.drones.id.x = x;
+        this.drones.id.y = y;
+        this.grid[x][y].drone = id;
     }
 }
