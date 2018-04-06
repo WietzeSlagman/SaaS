@@ -22,6 +22,6 @@ app.post('/api/createMission', (req, res) => {
     })
 })
 
-app.listen(6969, () => {
+app.listen(6868, () => {
     console.log('Mission creation is a gogo')
 })
