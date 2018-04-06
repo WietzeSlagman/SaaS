@@ -46,18 +46,26 @@ class Drone {
         }.bind(this));
     }
 
-    newStateTransaction() {
+    setStateBigchain() {
         this.getBatteryLifePromise().then(battery => {
             this.currentBattery = battery
 
             assetdata = {
-                location: this.location,
-                action: this.action,
+                id:                 this.id,
+                location:           this.location,
+                action:             this.action,
 
-                object_detected: this.object_detected,
-                battery: battery,
-                cost: this.currentBattery - battery,
+                object_detected:    this.object_detected,
+                battery:            battery,
+                cost:               this.currentBattery - battery,
             }
+
+            metadata = {}
+
+            var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
+
+            console.log(chalk.yellow(`Posted new transaction: ${signedTx.id}`));
+            dbinterface.postTransaction(signedTx)
 
         })
     }
@@ -196,6 +204,8 @@ d.movement.then(movement => {
                 movement.forward(1000).then(() => {
                     console.log(d.location);
                     console.log(d.facing);
+
+                    d.setStateBigchain()
                 })
             })
         })
