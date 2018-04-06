@@ -1,5 +1,5 @@
 const sumo = require("node-sumo")
-const dbinterface = require("../BigChainDBInterface/interface")
+const dbinterface = require("../BigchainDB/Interface")
 const chalk = require('chalk');
 
 const WAITTIME = 100
