@@ -1,6 +1,6 @@
 const driver = require('bigchaindb-driver')
 
-const DB_ENDPOINT = '192.168.169.44:9984/api/v1/'
+const DB_ENDPOINT = 'http://192.168.169.44:9984/api/v1/'
 
 class BigChainDBInterface {
     constructor() {
@@ -32,9 +32,9 @@ class BigChainDBInterface {
             this.conn.postTransaction(signedTx)
                 .then(() => this.conn.pollStatusAndFetchTransaction(signedTx.id))
                 .then(retrievedTx => resolve)
-        });
+        }.bind(this));
     }
 }
 
-module.exports = new BigChainDBInterface
+module.exports = new BigChainDBInterface()
 // export default const bla = new BigChainDBInterface
