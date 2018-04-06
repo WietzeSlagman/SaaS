@@ -1,19 +1,19 @@
 class Grid {
-    constructor(type, x, y, drones={}) {
+    constructor(type, size, drones={}) {
         this.type = type;
-        this.sizeX = x;
-        this.sizeY = y;
+        this.sizeX = size.x;
+        this.sizeY = size.y;
         this.drones = drones;
-        this.grid = createGrid(x, y);
+        this.grid = createGrid(size);
     }
 
-    createGrid(x, y) {
-        var grid = new Array(x);
+    createGrid(size) {
+        var grid = new Array(size.x);
 
         for (var i = 0; i < grid.length; i++) {
             grid[i] = new Array();
 
-            for(var j = 0; j < grid[i].length; j++) {
+            for(var j = 0; j < size.y; j++) {
                 grid[i].push({'drone':null, 'obstacle':null,  'object':null});
             }
         }
@@ -21,24 +21,24 @@ class Grid {
         return grid;
     }
 
-    addDrone(id, x, y) {
-        this.grd[x][y].drone = id;
+    addDrone(id, location) {
+        this.grd[location.x][location.y].drone = id;
     }
 
-    addObstacle(x, y) {
-        this.grd[x][y].obstacle = true;
+    addObstacle(location) {
+        this.grd[location.x][location.y].obstacle = true;
     }
 
-    addObject(id, x, y) {
-        this.grd[x][y].object = id;
+    addObject(id, location) {
+        this.grd[location.x][location.y].object = id;
     }
 
-    moveDrone(id, x, y) {
+    moveDrone(id, location) {
         drone = this.drones.id;
         this.grid[drone.x][drone.y].drone = null;
 
         this.drones.id.x = x;
         this.drones.id.y = y;
-        this.grid[x][y].drone = id;
+        this.grid[location.x][location.y].drone = id; 
     }
 }
