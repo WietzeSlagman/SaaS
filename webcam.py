@@ -17,46 +17,19 @@ def detectObject(frame, lower, upper):
     center = None
 
     if len(cnts) > 0:
-        return cnts[0]
-    return None
-
-
-def calculateDistance(cnts):
-    rectSize = cv2.minAreaRect(cnts)
-
-    return (rectSize * KNOWN_DISTANCE) / KNOWN_WIDTH
+        return True
+    return False
 
 def main():
-    #redLower = (170, 200, 200)
-    #redUpper = (179, 255, 255)
+    #Red
+    #lower = (170, 200, 200)
+    #upper = (179, 255, 255)
+
+    #Green
     lower = (29, 86, 6)
     upper = (64, 255, 255)
 
-    #frame = sys.argv[1]
-
-    cv2.namedWindow("preview")
-    vc = cv2.VideoCapture(0)
-
-    if vc.isOpened(): # try to get the first frame
-        rval, frame = vc.read()
-    else:
-        rval = False
-
-    while rval:
-        cv2.imshow("preview", frame)
-        rval, frame = vc.read()
-        detectObject(frame, lower, upper)
-        key = cv2.waitKey(20)
-        if key == 27: # exit on ESC
-            break
-    cv2.destroyWindow("preview")
-
-    # contours = detectObject(frame, lower, upper)
-    #
-    # if contours:
-    #     return calculateDistance(contours)
-    # else:
-    #     return None
+    detectObject(sys.argv[1], lower, upper)
 
 if __name__ == '__main__':
     main()
