@@ -48,7 +48,7 @@ class Drone {
 
     setStateBigchain() {
         this.getBatteryLifePromise().then(battery => {
-            assetdata = {
+            var assetdata = {
                 id:                 this.id,
                 location:           this.location,
                 action:             this.action,
@@ -58,7 +58,7 @@ class Drone {
                 cost:               this.currentBattery - battery,
             }
 
-            metadata = {}
+            var metadata = {}
 
             var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
@@ -68,6 +68,10 @@ class Drone {
             this.currentBattery = battery
         })
     }
+
+    // goto(location) {
+    //
+    // }
 
     _setLocation(distance, multiplier) {
         switch (this.facing) {
