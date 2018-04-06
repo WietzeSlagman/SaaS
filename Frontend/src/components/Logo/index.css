@@ -1,0 +1,22 @@
+.cls-1 {
+  fill:none;
+  stroke:#fff;
+  stroke-miterlimit:10;
+  stroke-width:6px;
+}
+
+.Logo-name {
+  display: block;
+  color: #fff;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 40px;
+  padding-left: 15px;
+}
+
+.Logo-slogan {
+  display: block;
+  color: #fff;
+  font-weight: 400;
+  font-size: 16px;
+}

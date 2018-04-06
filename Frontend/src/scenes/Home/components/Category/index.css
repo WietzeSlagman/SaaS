@@ -1,0 +1,15 @@
+.Category {
+  width: 50%;
+  height: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: #060c0e;
+}
+
+.Category-title {
+  font-size: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+}
