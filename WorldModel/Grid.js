@@ -34,11 +34,11 @@ class Grid {
     }
 
     moveDrone(id, location) {
-        drone = this.drones.id;
+        var drone = this.drones.id;
         this.grid[drone.x][drone.y].drone = null;
 
         this.drones.id.x = x;
         this.drones.id.y = y;
-        this.grid[location.x][location.y].drone = id; 
+        this.grid[location.x][location.y].drone = id;
     }
 }
