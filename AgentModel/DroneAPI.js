@@ -48,8 +48,6 @@ class Drone {
 
     setStateBigchain() {
         this.getBatteryLifePromise().then(battery => {
-            this.currentBattery = battery
-
             assetdata = {
                 id:                 this.id,
                 location:           this.location,
@@ -67,6 +65,7 @@ class Drone {
             console.log(chalk.yellow(`Posted new transaction: ${signedTx.id}`));
             dbinterface.postTransaction(signedTx)
 
+            this.currentBattery = battery
         })
     }
 
