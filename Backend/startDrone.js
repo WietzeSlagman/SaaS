@@ -2,18 +2,52 @@ const Drone 		= require('./AgentModel/DroneAPI.js');
 const BigchainDB	= require('./BigchainDB/ORMInterface');
 
 class DroneWrapper {
-	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true) {
+	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true, location= {x: 0, y:0}) {
+		this.createDroneBigchain = this.createDroneBigchain.bind(this);
+		this.listenForActions = this.listenForActions.bind(this);
+		this.checkClosest = this.checkClosest.bind(this);
+
+
+
 		if (!simulated) {
-			this.drone = new Drone('SEARCHANDRESCUE_TEST', {x: 0, y: 0});
+			this.drone = new Drone('SEARCHANDRESCUE_TEST', location);
 		} else {
+			var goTo = (location) => {
+				console.log('gogo', location)
+				this.drone.location = location;
+
+				this.bdbDrone.append({
+	                toPublicKey: this.drone.keypair.publicKey,
+	                keypair: this.drone.keypair,
+	                data:  {
+						location: location,
+						currentBattery: this.drone.currentBattery,
+						id: this.drone.id,
+						action: this.drone.action,
+						keypair: this.drone.keypair
+					}
+	            }).then((updatedDrone) => {
+	            	console.log('updatedDrone', updatedDrone.data)
+	            	this.bdbDrone = updatedDrone;
+	            }).catch(console.log)
+
+				// this.bdbDrone.append(this.drone.dbid, this.drone.keypair, {
+				// 	location: location,
+				// 	currentBattery: this.drone.currentBattery,
+				// 	id: this.drone.id,
+				// 	action: this.drone.action,
+				// 	keypair: this.drone.keypair
+				// }, 'droneModel').then((bla) => {
+				// 	console.log('hoi', bla)
+				// })
+ 			}
+
 			this.drone = {
-				location: {
-					x: 100,
-					y: 50,
-				},
-				currentBattery: 0,
+				location: location,
+				currentBattery: 10,
 				id: 'SEARCHANDRESCUE_TEST',
 				action: 'EXPLORE',
+				goTo: goTo.bind(this),
 				keypair: BigchainDB.createKeyPair()
 			}
 
@@ -33,6 +67,7 @@ class DroneWrapper {
 
         BigchainDB.create(this.drone.keypair, data, "droneModel").then((drone) => {
         	this.dbid = drone.id
+        	this.bdbDrone = drone;
         	console.log(this.dbid, drone.data, drone._schema.id())
 
         });
@@ -40,11 +75,12 @@ class DroneWrapper {
 
 
 	listenForActions() {
-		console.log('listener called')
+		console.log('listener called', this.dbid)
 		let prom =  new Promise((resolve, reject) => { 
 			BigchainDB.retrieve('', 'droneModel').then(drones => {
 				console.log('we retrievin')
-				const detected = this.checkDetected(drones);
+				// const detected = this.checkDetected(drones);
+				const detected = false;
 				if (this.drone.currentBattery < 10) {
 					console.log('Low battery');
 					resolve();
@@ -60,15 +96,31 @@ class DroneWrapper {
 
 					resolve();
 				} else {
-					console.log('what')
-					switch(drone.action) {
-						case "EXPLORE": 
-							// generate move
-							console.log('Exploring');
-							resolve();
-						default:
-							console.log('No action found');
-							reject('No action found');
+					console.log('what', this.drone.action)
+					if (this.drone.action == 'EXPLORE') {
+						// generate move
+						console.log('Exploring');
+						if (Math.random() > 0.5) {
+							var newX = this.drone.location.x + 1;
+
+							if (newX < 100) {
+								this.drone.goTo({x: this.drone.location.x + 1, y: this.drone.location.y})
+							} else {
+								this.drone.goTo({x: this.drone.location.x - 2, y: this.drone.location.y})
+							}
+						} else {
+							var newY = this.drone.location.y + 1;
+
+							if (newY < 100) {
+								this.drone.goTo({x: this.drone.location.x, y: this.drone.location.y + 1})
+							} else {
+								this.drone.goTo({x: this.drone.location.x, y: this.drone.location.y - 2})
+							}
+						}
+						resolve();
+					} else {
+						console.log('No action found', this.drone.action);
+						reject('No action found');
 					}
 				}
 

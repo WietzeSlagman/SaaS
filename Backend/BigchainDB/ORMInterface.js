@@ -58,14 +58,16 @@ class ORMInterface {
     }
 
     append(id, keypair, data, type) {
-        return this.bdbOrm[type].append({
-            toPublicKey: id,
-            keypair: keypair,
-            data: data
-        }).then(object => {
-            return object;
-        }).catch((e) => {
-            return e;
+        return this.retrieve(id, type).then((asset) => {
+            return asset.append({
+                toPublicKey: id,
+                keypair: keypair,
+                data: data
+            }).then(object => {
+                return object;
+            }).catch((e) => {
+                return e;
+            });
         });
     }
 }

@@ -3,7 +3,7 @@ const dbinterface = require("../BigchainDB/ORMInterface")
 const chalk = require('chalk');
 const blobUtil = require('blob-util')
 const fs = require('fs')
-const cv = require('opencv')
+// const cv = require('opencv')
 const WAITTIME = 100
 const STARTUPTIME = 100
 

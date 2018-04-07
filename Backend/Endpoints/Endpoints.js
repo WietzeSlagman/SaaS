@@ -21,7 +21,7 @@ app.use(cors());
 
 app.post('/api/createMission', (req, res) => {
     return new Promise((resolve, reject) => {
-    	const grid = new Grid('mission', {x: 100, y: 100});
+    	const grid = new Grid('SEARCHANDRESCUE', {x: 100, y: 100});
     	resolve(grid);
     });
 });
