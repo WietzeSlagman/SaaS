@@ -19,6 +19,7 @@ class Logo extends React.Component {
     const { width, showName, showSlogan } = this.props;
     return (
       <div className="mt-1">
+        <a href="/">
         <svg xmlns="http://www.w3.org/2000/svg" width={width} viewBox="0 0 107.18 93.45" className="bayleyssvg">
           <title>Asset 1</title>
           <g id="Layer_2" data-name="Layer 2">
@@ -28,7 +29,8 @@ class Logo extends React.Component {
           </g>
         </svg>
         {showName && <span className="Logo-name fadeIn">Grex</span>}
-        {showSlogan && <span className="Logo-slogan fadeIn">A decentral hivemind</span>}
+        {showSlogan && <span className="Logo-slogan fadeIn">A Decentral Hivemind</span>}
+        </a>
       </div>
     );
   }

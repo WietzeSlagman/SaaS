@@ -45,11 +45,8 @@ function MissionMap(props) {
 
             <OverlayView
               position={getWorldCoords(gridBounds, coords)}
-
               mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-
               getPixelPositionOffset={getPixelPositionOffset}
-
             >
             <span className="pulse" onClick={(evt) => onMarkerClick(evt, marker)}></span>
             </OverlayView>
