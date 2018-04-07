@@ -2,6 +2,47 @@
   display: none;
 }
 
+.pulse {
+  margin:100px;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: red;
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+  animation: pulse 2s infinite;
+}
+.pulse:hover {
+  animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 red;
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px red;
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 red;
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 red;
+    box-shadow: 0 0 0 0 red;
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+      box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+      box-shadow: 0 0 0 0 rgba(204,169,44, 0);
+  }
+}
+
 /*.gmnoprint, .gmnoscreen, .gm-style-cc {
   display: none!important;
 }*/
