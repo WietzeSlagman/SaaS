@@ -1,5 +1,5 @@
 const sumo = require("node-sumo")
-const dbinterface = require("../BigchainDB/Interface")
+const dbinterface = require("../BigchainDB/ORMInterface")
 const chalk = require('chalk');
 
 const WAITTIME = 100
@@ -10,6 +10,10 @@ class Drone {
         this.drone = sumo.createClient()
         this.id = id
 
+        this.keypair = dbinterface.createKeyPair()
+        this.dbid = null
+        this._createDroneBigchain()
+
         this.location = init_location
         this.history = []
 
@@ -17,8 +21,6 @@ class Drone {
 
         // Initial facing north
         this.facing = this.directions[0]
-
-        this.keypair = dbinterface.createKeyPair()
 
         console.log(chalk.blue(`Trying to connect`));
         this.connected = new Promise(function(resolve, reject) {
@@ -48,9 +50,18 @@ class Drone {
         }.bind(this));
     }
 
+    _createDroneBigchain() {
+        var data = {
+            id: this.id,
+            type: "create_drone"
+        }
+
+        this.dbid = dbinterface.create(this.keypair, data, "droneModel").id
+    }
+
     setStateBigchain() {
         this.getBatteryLifePromise().then(battery => {
-            var assetdata = {
+            var data = {
                 id:                 this.id,
                 location:           this.location,
                 action:             this.action,
@@ -58,16 +69,14 @@ class Drone {
                 object_detected:    this.object_detected,
                 battery:            battery,
                 cost:               this.currentBattery - battery,
+                type:               "drone_update"
             }
 
-            var metadata = {
-                type: "drone_update"
-            }
-
-            var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
+            dbinterface.append(this.dbid, this.keypair, data, "droneModel")
+            // var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
             console.log(chalk.yellow(`Posted new transaction: ${signedTx.id}`));
-            dbinterface.postTransaction(signedTx)
+            // dbinterface.postTransaction(signedTx)
 
             this.currentBattery = battery
         })
@@ -75,11 +84,6 @@ class Drone {
 
     goto(location) {
         return new Promise(function(resolve, reject) {
-            // var x = location.x - this.location.x; // FIXME
-
-            console.log(this.location, location);
-            console.log(this.location.x < 0 && location.x >= 0, this.location.y < 0 && location.y >= 0);
-
             if (this.location.x < 0 && location.x >= 0) {
                 var x = location.x + Math.abs(this.location.x)
             } else {
@@ -303,6 +307,8 @@ class Drone {
 
 var d  = new Drone("test", {x: 0, y:0})
 
+d.setStateBigchain()
+
 d.goto({x: 0, y: -400}).then(() => {
     console.log("finished");
     d.goto({x:0, y:0}).then(() => {
@@ -310,4 +316,5 @@ d.goto({x: 0, y: -400}).then(() => {
     })
 })
 
-module.exports = Drone
+
+// module.exports = Drone

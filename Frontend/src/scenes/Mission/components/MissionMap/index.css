@@ -1,0 +1,7 @@
+.gm-style img[src="https://maps.gstatic.com/mapfiles/api-3/images/google_white5.png"] {
+  display: none;
+}
+
+.gmnoprint a, .gmnoprint div .gmnoscreen, .gm-style-cc {
+  display: none!important;
+}

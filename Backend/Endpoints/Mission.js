@@ -1,7 +1,10 @@
-var BigchainDB      = require('../BigchainDB/Interface.js')
-var fetch 			= require('node-fetch');
-var fs 				= require('fs');
-var cors 			= require('cors')
+// const BigchainDB    = require('../BigchainDB/Interface.js');
+const BigchainDB	= require('../BigchainDB/ORMInterface');
+const Grid			= require('../WorldModel/Grid');
+const fetch 		= require('node-fetch');
+const fs 			= require('fs');
+const cors 			= require('cors');
+
 
 // express
 const express 		= require('express');
@@ -12,16 +15,16 @@ const app 			= express();
 // printing
 var chalk 			= require('chalk');
 
-app.use(bodyParser.json())
-app.use(cors())
+app.use(bodyParser.json());
+app.use(cors());
 
 
 app.post('/api/createMission', (req, res) => {
     return new Promise((resolve, reject) => {
-
-    })
-})
+    	const grid = new Grid('mission', {x: 100, y: 100});
+    });
+});
 
 app.listen(6868, () => {
-    console.log('Mission creation is a gogo')
-})
+    console.log('Mission creation is a gogo');
+});
