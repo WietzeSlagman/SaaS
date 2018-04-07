@@ -5,6 +5,8 @@
   right: 0;
   padding: 30px 30px 0 0;
   min-width: 90px;
+  color: #dfe3ff;
+  text-shadow: 0 1px 6px #00adff;
 }
 
 .DronesOverview-header {
@@ -13,27 +15,39 @@
   font-weight: 600;
   font-size: 16px;
   margin-bottom: 15px;
-  text-align: right;
 }
 
-.DroneItem {
+.DronesItem {
   width: 100%;
   margin-bottom: 5px;
   color: #fff;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
 }
 
-.DroneItem::before {
+.DronesItem::before {
   content: "";
   display: block;
   width: 5px;
   height: 5px;
   margin-right: 10px;
+}
+
+.DronesItem-video::before {
+  background: green;
+}
+
+.DronesItem-worker::before {
   background: orange;
 }
 
-.DroneItem-id {
+.DronesItem-count {
   margin-right: 5px;
+  width: 30px;
+  text-align: center;
+}
+
+.DronesItem-type {
+
 }

@@ -4,8 +4,8 @@ import './index.css';
 
 const propTypes = {
   width: PropTypes.number,
-  showName: PropTypes.boolean,
-  showSlogan: PropTypes.boolean,
+  showName: PropTypes.bool,
+  showSlogan: PropTypes.bool,
 };
 
 const defaultProps = {

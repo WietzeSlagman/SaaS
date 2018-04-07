@@ -7,13 +7,14 @@ class DronesOverview extends React.Component {
 
     return (
       <div className="DronesOverview">
-        <div className="DronesOverview-header">Drones</div>
+        <div className="DronesOverview-header">Ecosystem</div>
         {items.map((item) => (
           <div
-            key={item.id}
-            className="DroneItem"
+            key={item.type}
+            className={`DronesItem DronesItem-${item.type.toLowerCase()}`}
           >
-            <span className="DroneItem-battery">{item.battery}</span>
+            <span className="DronesItem-count">{item.drones.length}</span>
+            <span className="DronesItem-type">{item.type}</span>
           </div>
         ))}
       </div>

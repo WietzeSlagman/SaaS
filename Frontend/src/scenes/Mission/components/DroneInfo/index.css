@@ -1,0 +1,21 @@
+.DroneInfo {
+  position: absolute;
+  z-index: 130;
+  bottom: 30px;
+  left: 30px;
+  color: #fff;
+}
+
+.DroneInfo-header {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 36px;
+  color: #dfe3ff;
+  text-shadow: 0 1px 6px #00adff;
+}
+
+.DroneInfo-id {
+  font-size: 25px;
+  color: #ffb733;
+  text-shadow: 0 1px 6px #ff991b;
+}

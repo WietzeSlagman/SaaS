@@ -16,7 +16,7 @@ function getWorldCoords(gridBounds, gridCoords) {
 }
 
 function MissionMap(props) {
-  const { gridBounds, center, markers } = props;
+  const { gridBounds, center, markers, onMarkerClick } = props;
 
   return (
     <GoogleMap
@@ -24,13 +24,13 @@ function MissionMap(props) {
       defaultCenter={center}
       defaultOptions={{
         styles: mapStyle,
-        disableDefaultUI: true,
-        controlText: {
-          style: {
-            fontFamily: 'Stratum2',
-          },
-        },
+        disableDoubleClickZoom: true,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        zoomControl: false,
       }}
+      clickableIcons
     >
       {markers.map((marker) => {
         const { coords } = marker;
@@ -39,6 +39,7 @@ function MissionMap(props) {
             key={marker.id}
             icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
             position={getWorldCoords(gridBounds, coords)}
+            onClick={(evt) => onMarkerClick(evt, marker)}
           />
         );
       })}
@@ -48,7 +49,7 @@ function MissionMap(props) {
 
 export default compose(
   withProps({
-    googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
+    googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg&v=3.exp&libraries=geometry,drawing,places",
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `100%` }} />,
     mapElement: <div style={{ height: `100%` }} />,
