@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withProps } from 'recompose';
-import { Rectangle, withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import { Rectangle, withScriptjs, withGoogleMap, GoogleMap, Marker, OverlayView } from 'react-google-maps';
 import mapStyle from './mapStyle.json';
 import './index.css';
 
@@ -14,6 +14,11 @@ function getWorldCoords(gridBounds, gridCoords) {
     lng: gridBounds.west + (horzStepSize * gridCoords.x),
   };
 }
+
+const getPixelPositionOffset = (width, height) => ({
+  x: -(width / 2),
+  y: -(height / 2),
+})
 
 function MissionMap(props) {
   const { gridBounds, center, markers, onMarkerClick } = props;
@@ -32,15 +37,23 @@ function MissionMap(props) {
       }}
       clickableIcons
     >
+
+
       {markers.map((marker) => {
         const { coords } = marker;
         return (
-          <Marker
-            key={marker.id}
-            icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-            position={getWorldCoords(gridBounds, coords)}
-            onClick={(evt) => onMarkerClick(evt, marker)}
-          />
+
+            <OverlayView
+              position={getWorldCoords(gridBounds, coords)}
+
+              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+
+              getPixelPositionOffset={getPixelPositionOffset}
+
+            >
+            <span className="pulse" onClick={(evt) => onMarkerClick(evt, marker)}></span>
+            </OverlayView>
+
         );
       })}
     </GoogleMap>
