@@ -24,7 +24,7 @@
 .path {
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    animation: dash 5s linear forwards;
+    animation: dash 10s linear forwards;
     animation-iteration-count: 1;
     animation-delay: 1s;
 }
