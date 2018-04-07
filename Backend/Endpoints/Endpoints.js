@@ -29,13 +29,21 @@ app.post('/api/createMission', (req, res) => {
 app.post('/api/retrieveMission', (req, res) => {
     return new Promise((resolve, reject) => {
         //console.log(req.body.id)
-        BigchainDB.retrieve(req.body.id, 'gridModel').then( object => {
+        BigchainDB.retrieve(req.body.id, 'gridModel').then(grid => {
             resolve(grid);
             console.log(grid);
         });
     });
 });
 
-app.listen(6868, () => {
+app.post('/api/retrieveDrone', (req, res) => {
+    return new Promise((resolve, reject) => {
+        BigchainDB.retrieve(req.body.id, 'droneModel').then(drone => {
+            resolve(drone);
+        });
+    });
+});
+
+app.listen(6767, () => {
     console.log('Mission creation is a gogo');
 });

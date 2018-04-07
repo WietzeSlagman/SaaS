@@ -1,9 +1,11 @@
-const sumo = require("node-sumo")
+const sumo = require("node-jumping-night")
 const dbinterface = require("../BigchainDB/ORMInterface")
 const chalk = require('chalk');
+const blobUtil = require('blob-util')
 
 const WAITTIME = 100
 const STARTUPTIME = 100
+
 
 class Drone {
     constructor(id, init_location) {
@@ -79,6 +81,13 @@ class Drone {
             // dbinterface.postTransaction(signedTx)
 
             this.currentBattery = battery
+        })
+    }
+
+    getVideoFeed() {
+        this.drone.getVideoStream()
+        return new Promise ((req, res) => {
+            this.drone.on
         })
     }
 
@@ -178,11 +187,6 @@ class Drone {
                 resolve()
             }
         }.bind(this));
-    }
-
-    getVideo(callback) {
-        this.drone.getVideoStream()
-        this.drone.on("data", callback)
     }
 
     _setLocation(distance, multiplier) {
@@ -306,15 +310,5 @@ class Drone {
 }
 
 var d  = new Drone("test", {x: 0, y:0})
-
-d.setStateBigchain()
-
-d.goto({x: 0, y: -400}).then(() => {
-    console.log("finished");
-    d.goto({x:0, y:0}).then(() => {
-        console.log("finished2");
-    })
-})
-
 
 // module.exports = Drone
