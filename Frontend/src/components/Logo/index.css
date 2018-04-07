@@ -6,12 +6,36 @@
 }
 
 .Logo-name {
-  display: block;
-  color: #fff;
-  font-weight: 400;
-  text-transform: uppercase;
-  font-size: 40px;
-  padding-left: 15px;
+    display: inline-block;
+    color: #fff;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 40px;
+    padding-left: 15px;
+    -webkit-animation-duration: 8s;
+    animation-duration: 8s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.fadeIn {
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+}
+
+
+.mt-1{
+    margin-top: 30px;
 }
 
 .Logo-slogan {
@@ -19,6 +43,10 @@
   color: #fff;
   font-weight: 400;
   font-size: 16px;
+  -webkit-animation-duration: 10s;
+  animation-duration: 10s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
 }
 
 .path {
