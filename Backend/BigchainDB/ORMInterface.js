@@ -1,12 +1,12 @@
 const bdbOrm        = require('bigchaindb-orm');
-const DB_ENDPOINT   = require("const.js").db;
+const DB_ENDPOINT   = require("./const.js").db;
 const driver        = require('bigchaindb-driver')
 
 
 class ORMInterface {
     constructor() {
         // console.log(bdbOrm.default())
-        this.bdbOrm = new bdbOrm.default(DB_ENDPOINT)
+        this.bdbOrm = new bdbOrm.default(`http://${DB_ENDPOINT}`)
 
         this.bdbOrm.define("droneModel", {
             id: String,
