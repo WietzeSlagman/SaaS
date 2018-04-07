@@ -19,6 +19,8 @@ class Drone {
         this.facing = this.directions[0]
 
         this.keypair = dbinterface.createKeyPair()
+
+        console.log(chalk.blue(`Trying to connect`));
         this.connected = new Promise(function(resolve, reject) {
             this.drone.connect(() => {
                 console.log(chalk.blue(`Connected to drone ${id}`));
@@ -69,27 +71,130 @@ class Drone {
         })
     }
 
-    // goto(location) {
-    //
-    // }
+    goto(location) {
+        return new Promise(function(resolve, reject) {
+            // var x = location.x - this.location.x; // FIXME
+
+            console.log(this.location, location);
+            console.log(this.location.x < 0 && location.x >= 0, this.location.y < 0 && location.y >= 0);
+
+            if (this.location.x < 0 && location.x >= 0) {
+                var x = location.x + Math.abs(this.location.x)
+            } else {
+                var x = location.x - this.location.x
+            }
+
+            if (this.location.y < 0 && location.y >= 0) {
+                var y = location.y + Math.abs(this.location.y)
+            } else {
+                var y = location.y - this.location.y
+            }
+
+            this._goto_y(y).then(() => {
+                this._goto_x(x).then(() => {
+                    console.log(chalk.blue(`Finished move to: (${location.x}, ${location.y})`));
+
+                    this.location = location
+                    setTimeout(() => {
+                        resolve()
+                    }, WAITTIME*10)
+                })
+            })
+        }.bind(this));
+    }
+
+    _goto_x(x, location) {
+        return new Promise(function(resolve, reject) {
+            if (x !== 0) {
+                this.movement.then((movement) => {
+                    var forward_func  = x > 0 ? movement.forward  : movement.backward
+                    var backward_func = x < 0 ? movement.backward : movement.forward
+
+                    switch (this.facing) {
+                        case "N":
+                            movement.right().then(() => {
+                                forward_func(Math.abs(x)).then(resolve)
+                            })
+                            break;
+                        case "E":
+                            forward_func(Math.abs(x)).then(resolve)
+                            break;
+                        case "S":
+                            movement.left().then(() => {
+                                forward_func(Math.abs(x)).then(resolve)
+                            })
+                            break;
+                        case "W":
+                            backward_func(Math.abs(x)).then(resolve)
+                            break;
+                        default:
+                            console.log(chalk.red("IMPOSSIBLE FACING"));
+                    }
+                })
+            } else {
+                resolve()
+            }
+        }.bind(this));
+
+    }
+
+    _goto_y(y, location) {
+        return new Promise(function(resolve, reject) {
+            if (y !== 0) {
+                this.movement.then((movement) => {
+                    console.log("testing testing", this.facing);
+
+                    var forward_func  = y > 0 ? movement.forward  : movement.backward
+                    var backward_func = y < 0 ? movement.backward :  movement.forward
+
+                    switch (this.facing) {
+                        case "N":
+                            backward_func(Math.abs(y)).then(resolve)
+                            break;
+                        case "E":
+                            movement.left().then(() => {
+                                forward_func(Math.abs(y)).then(resolve)
+                            })
+                            break;
+                        case "S":
+                            forward_func(Math.abs(y)).then(resolve)
+                            break;
+                        case "W":
+                            movement.right().then(() => {
+                                forward_func(Math.abs(y)).then(resolve)
+                            })
+                            break;
+                        default:
+                            console.log(chalk.red("IMPOSSIBLE FACING"));
+                    }
+                })
+            } else {
+                resolve()
+            }
+        }.bind(this));
+    }
 
     _setLocation(distance, multiplier) {
+        console.log(distance, distance*multiplier);
+
         switch (this.facing) {
             case "N":
-                this.location.x -= distance * multiplier
+                this.location.y -= distance * multiplier
                 break;
             case "E":
-                this.location.y += distance * multiplier
-                break;
-            case "S":
                 this.location.x += distance * multiplier
                 break;
+            case "S":
+                this.location.y += distance * multiplier
+                break;
             case "W":
-                this.location.y -= distance * multiplier
+                this.location.x -= distance * multiplier
                 break;
             default:
                 console.log(chalk.red("IMPOSSIBLE FACING"));
         }
+
+        console.log(chalk.blue(`New location: (${this.location.x}, ${this.location.y})`));
 
         return this.location
     }
@@ -116,7 +221,7 @@ class Drone {
 
             setTimeout(() => {
                 this.drone.stop()
-                this._setLocation(time, -1)
+                this._setLocation(time, 1)
 
                 setTimeout(() => {
                     resolve()
@@ -154,7 +259,7 @@ class Drone {
     _left() {
         return new Promise(function(resolve, reject) {
             var current = this.directions.indexOf(this.facing)
-            var next = current -= 1
+            var next = current - 1
 
             // if less than 0 then 0
             if (next < 0) {
@@ -191,47 +296,11 @@ class Drone {
 
 var d  = new Drone("test", {x: 0, y:0})
 
-d.movement.then(movement => {
-    movement.right().then(() => {
-        console.log(d.facing);
-        console.log(d.location);
-
-        movement.forward(1000).then(() => {
-            console.log(d.facing);
-            console.log(d.location);
-
-            movement.right().then(() => {
-                console.log(d.facing);
-                console.log(d.location);
-
-                movement.forward(1000).then(() => {
-                    console.log(d.location);
-                    console.log(d.facing);
-
-                    d.setStateBigchain()
-                })
-            })
-        })
-    });
-
-    // console.log("facing", d.facing);
-    //
-    // setTimeout(() => {
-    //     movement.left();
-    //     console.log("facing", d.facing);
-    // }, 500) // magic number; almost left
-    //
-    //
-    // movement.right();
-    // console.log("facing", d.facing);
-    //
-    // movement.right();
-    // console.log("facing", d.facing);
-
-    // setTimeout(function() {
-    //     // movement.stop();
-    //
-    // }, 1000);
+d.goto({x: 0, y: -400}).then(() => {
+    console.log("finished");
+    d.goto({x:0, y:0}).then(() => {
+        console.log("finished2");
+    })
 })
 
 module.exports = Drone
