@@ -1,5 +1,5 @@
 const bdbOrm        = require('bigchaindb-orm');
-const DB_ENDPOINT   = 'http://192.168.169.44:9984/api/v1/';
+const DB_ENDPOINT   = require("const.js").db;
 const driver        = require('bigchaindb-driver')
 
 
@@ -14,7 +14,7 @@ class ORMInterface {
             action: String,
 
             object_detected: Boolean,
-            battery: Number,   
+            battery: Number,
             cost: Number,
             type: String
         });
@@ -32,7 +32,7 @@ class ORMInterface {
     createKeyPair() {
         return new driver.Ed25519Keypair()
     }
-    
+
     create(keypair, data, type) {
         return this.bdbOrm[type].create({
             keypair: id,
