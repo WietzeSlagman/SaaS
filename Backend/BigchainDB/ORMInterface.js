@@ -1,5 +1,5 @@
 const bdbOrm        = require('bigchaindb-orm');
-const DB_ENDPOINT   = 'http://192.168.169.44:9984/api/v1/';
+const DB_ENDPOINT   = 'http://localhost:9984/api/v1/';
 const driver        = require('bigchaindb-driver')
 
 
@@ -10,7 +10,7 @@ class ORMInterface {
 
         this.bdbOrm.define("droneModel", {
             id: String,
-            location: String,
+            location: Object,
             action: String,
 
             object_detected: Boolean,
@@ -22,7 +22,7 @@ class ORMInterface {
 
         this.bdbOrm.define("gridModel", {
             type: String,
-            location: String,
+            location: Object,
             drones: Object,
             grid: Object,
             name: String
@@ -35,7 +35,7 @@ class ORMInterface {
     
     create(keypair, data, type) {
         return this.bdbOrm[type].create({
-            keypair: id,
+            keypair: keypair,
             data: data
         }).then(object => {
             return object;

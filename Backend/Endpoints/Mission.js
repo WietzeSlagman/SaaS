@@ -1,5 +1,6 @@
 // const BigchainDB    = require('../BigchainDB/Interface.js');
 const BigchainDB	= require('../BigchainDB/ORMInterface');
+const Grid			= require('../WorldModel/Grid');
 const fetch 		= require('node-fetch');
 const fs 			= require('fs');
 const cors 			= require('cors');
@@ -20,10 +21,10 @@ app.use(cors());
 
 app.post('/api/createMission', (req, res) => {
     return new Promise((resolve, reject) => {
-    	// ORMInterface();
-    })
-})
+    	const grid = new Grid('mission', {x: 100, y: 100});
+    });
+});
 
 app.listen(6868, () => {
     console.log('Mission creation is a gogo');
-})
+});

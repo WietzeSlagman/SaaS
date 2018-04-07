@@ -1,10 +1,19 @@
+const BigchainDB    = require('../BigchainDB/ORMInterface');
+
 class Grid {
     constructor(type, size, drones={}) {
+        this.keypair = BigchainDB.createKeyPair();
         this.type = type;
         this.sizeX = size.x;
         this.sizeY = size.y;
         this.drones = drones;
-        this.grid = createGrid(size);
+        this.grid = this.createGrid(size);
+
+        BigchainDB.create(this.keypair, this, 'gridModel').then((grid) => {
+            this.id = grid.id
+        }).catch((e) => {
+            console.log()
+        });
     }
 
     createGrid(size) {
@@ -42,3 +51,5 @@ class Grid {
         this.grid[location.x][location.y].drone = id;
     }
 }
+
+module.exports = Grid;
