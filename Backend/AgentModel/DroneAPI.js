@@ -60,7 +60,9 @@ class Drone {
                 cost:               this.currentBattery - battery,
             }
 
-            var metadata = {}
+            var metadata = {
+                type: "drone_update"
+            }
 
             var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
@@ -172,6 +174,11 @@ class Drone {
                 resolve()
             }
         }.bind(this));
+    }
+
+    getVideo(callback) {
+        this.drone.getVideoStream()
+        this.drone.on("data", callback)
     }
 
     _setLocation(distance, multiplier) {

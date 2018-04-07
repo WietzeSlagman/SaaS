@@ -22,15 +22,15 @@ class Grid {
     }
 
     addDrone(id, location) {
-        this.grd[location.x][location.y].drone = id;
+        this.grid[location.x][location.y].drone = id;
     }
 
     addObstacle(location) {
-        this.grd[location.x][location.y].obstacle = true;
+        this.grid[location.x][location.y].obstacle = true;
     }
 
     addObject(id, location) {
-        this.grd[location.x][location.y].object = id;
+        this.grid[location.x][location.y].object = id;
     }
 
     moveDrone(id, location) {
