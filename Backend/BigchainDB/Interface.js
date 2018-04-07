@@ -1,10 +1,10 @@
 const driver = require('bigchaindb-driver')
 
-const DB_ENDPOINT = 'http://192.168.169.44:9984/api/v1/'
+const DB_ENDPOINT = require("./const.js").db
 
 class BigChainDBInterface {
     constructor() {
-        this.conn = new driver.Connection(DB_ENDPOINT)
+        this.conn = new driver.Connection(`http://${DB_ENDPOINT}`)
     }
 
     createKeyPair() {
@@ -36,5 +36,11 @@ class BigChainDBInterface {
     }
 }
 
+var test = new BigChainDBInterface()
+
+var keypair = test.createKeyPair()
+var tx = test.makeSignedTx({}, {"type": "poepen"}, keypair)
+
+test.postTransaction(tx)
+
 module.exports = new BigChainDBInterface()
-// export default const bla = new BigChainDBInterface
