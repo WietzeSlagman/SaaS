@@ -10,7 +10,7 @@ class Category extends React.Component {
   render() {
     const { name } = this.props;
     return (
-      <div className="Category">
+      <div className="Category grow">
         <div className="Category-title">{name}</div>
       </div>
     );

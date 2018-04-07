@@ -13,3 +13,10 @@
   text-transform: uppercase;
   color: #fff;
 }
+
+.grow > .Category-title{
+    transition: all .4s ease-in-out;
+}
+.grow:hover > .Category-title {
+    transform: scale(1.08);
+}
