@@ -10,10 +10,10 @@ class Home extends React.Component {
       <div>
         {/*<Intro />*/}
         <CategorySelector>
-          <Category name="Wildlife Protection" />
-          <Category name="Building" />
-          <Category name="Search & Rescue" />
-          <Category name="Planetary Observation " />
+          <Category name="Wildlife Protection" img_src="https://media.giphy.com/media/1j9lIbzgW1aT0TxoQW/giphy.gif" img_alt=""/>
+          <Category name="Building" img_src="https://media.giphy.com/media/OqFILVTtyMnsndIWh6/giphy.gif" img_alt=""/>
+          <Category name="Search & Rescue" img_src="https://media.giphy.com/media/1Ago3fCisrbEz49fkS/giphy.gif" img_alt=""/>
+          <Category name="Planetary Observation" img_src="https://media.giphy.com/media/7vAfO2V6hD4ZoYvvZ3/giphy.gif" img_alt=""/>
         </CategorySelector>
       </div>
     );
