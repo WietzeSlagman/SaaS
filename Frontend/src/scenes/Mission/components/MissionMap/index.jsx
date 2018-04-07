@@ -40,7 +40,6 @@ function MissionMap(props) {
       {markers.map((marker) => {
         const { coords } = marker;
         return (
-<<<<<<< HEAD
           <OverlayView
             key={marker.id}
             position={getWorldCoords(gridBounds, coords)}
@@ -49,17 +48,6 @@ function MissionMap(props) {
           >
           <span className="pulse" onClick={(e) => onMarkerClick(marker)} />
           </OverlayView>
-=======
-
-            <OverlayView
-              position={getWorldCoords(gridBounds, coords)}
-              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              getPixelPositionOffset={getPixelPositionOffset}
-            >
-            <span className="pulse" onClick={(evt) => onMarkerClick(evt, marker)}></span>
-            </OverlayView>
-
->>>>>>> origin/master
         );
       })}
     </GoogleMap>
