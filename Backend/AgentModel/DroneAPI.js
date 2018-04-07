@@ -2,7 +2,8 @@ const sumo = require("node-jumping-night")
 const dbinterface = require("../BigchainDB/ORMInterface")
 const chalk = require('chalk');
 const blobUtil = require('blob-util')
-
+const fs = require('fs')
+const cv = require('opencv')
 const WAITTIME = 100
 const STARTUPTIME = 100
 
@@ -41,6 +42,7 @@ class Drone {
         this.speed = 50
 
         this.movement = this.createMovementControls()
+
     }
 
     getBatteryLifePromise() {
@@ -84,10 +86,11 @@ class Drone {
         })
     }
 
-    getVideoFeed() {
-        this.drone.getVideoStream()
-        return new Promise ((req, res) => {
-            this.drone.on
+    getVideoData() {
+        var video = this.drone.getVideoStream()
+
+        video.on("data", function(data){
+            return data
         })
     }
 
@@ -310,5 +313,8 @@ class Drone {
 }
 
 var d  = new Drone("test", {x: 0, y:0})
+setInterval(function(){
+d.getVideoBlob()
+}, 1000)
 
 // module.exports = Drone
