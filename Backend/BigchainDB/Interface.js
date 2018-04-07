@@ -36,11 +36,11 @@ class BigChainDBInterface {
     }
 }
 
-var test = new BigChainDBInterface()
-
-var keypair = test.createKeyPair()
-var tx = test.makeSignedTx({}, {"type": "poepen"}, keypair)
-
-test.postTransaction(tx)
+// var test = new BigChainDBInterface()
+//
+// var keypair = test.createKeyPair()
+// var tx = test.makeSignedTx({}, {"type": "poepen"}, keypair)
+//
+// test.postTransaction(tx)
 
 module.exports = new BigChainDBInterface()

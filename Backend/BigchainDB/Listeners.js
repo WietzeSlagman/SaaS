@@ -30,9 +30,9 @@ class Listener {
     }
 }
 
-var test = new Listener()
-test.add_on_do("poepen", (data) => {
-    console.log(data);
-})
+// var test = new Listener()
+// test.add_on_do("poepen", (data) => {
+//     console.log(data);
+// })
 
 module.exports = new Listener()
