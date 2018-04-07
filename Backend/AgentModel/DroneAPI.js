@@ -174,6 +174,11 @@ class Drone {
         }.bind(this));
     }
 
+    getVideo(callback) {
+        this.drone.getVideoStream()
+        this.drone.on("data", callback)
+    }
+
     _setLocation(distance, multiplier) {
         console.log(distance, distance*multiplier);
 
