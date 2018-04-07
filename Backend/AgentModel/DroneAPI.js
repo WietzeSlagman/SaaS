@@ -1,5 +1,5 @@
 const sumo = require("node-sumo")
-const dbinterface = require("../BigchainDB/Interface")
+const dbinterface = require("../BigchainDB/ORMInterface")
 const chalk = require('chalk');
 
 const WAITTIME = 100
@@ -9,6 +9,7 @@ class Drone {
     constructor(id, init_location) {
         this.drone = sumo.createClient()
         this.id = id
+        this.dbid = null
 
         this.location = init_location
         this.history = []
@@ -48,9 +49,18 @@ class Drone {
         }.bind(this));
     }
 
+    _createDroneBigchain() {
+        var data = {
+            id: this.id
+            type: "create_drone"
+        }
+
+        this.dbid = dbinterface.create(this.keypair, data, "droneModel").id
+    }
+
     setStateBigchain() {
         this.getBatteryLifePromise().then(battery => {
-            var assetdata = {
+            var data = {
                 id:                 this.id,
                 location:           this.location,
                 action:             this.action,
@@ -58,16 +68,14 @@ class Drone {
                 object_detected:    this.object_detected,
                 battery:            battery,
                 cost:               this.currentBattery - battery,
+                type:               "drone_update"
             }
 
-            var metadata = {
-                type: "drone_update"
-            }
-
-            var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
+            dbinterface.append(this.dbid, this.keypair, data, "droneModel")
+            // var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
             console.log(chalk.yellow(`Posted new transaction: ${signedTx.id}`));
-            dbinterface.postTransaction(signedTx)
+            // dbinterface.postTransaction(signedTx)
 
             this.currentBattery = battery
         })
