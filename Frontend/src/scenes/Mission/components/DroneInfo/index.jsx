@@ -1,14 +1,22 @@
 import React from 'react';
+import CircularProgressBar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import './index.css';
 
 class DroneInfo extends React.PureComponent {
   render() {
-    const { id, type } = this.props;
+    const { id, type, percentage } = this.props;
+    console.log(percentage);
     return (
       <div className="DroneInfo">
-        <div>
-          <div className="DroneInfo-header">{type} Drone</div>
-          <div className="DroneInfo-id">{id}</div>
+        <div className="DroneInfo-inner">
+          <div className="DroneInfo-inner-left">
+            <CircularProgressBar percentage={percentage} />
+          </div>
+          <div>
+            <div className="DroneInfo-header">{type} Drone</div>
+            <div className="DroneInfo-id">{id}</div>
+          </div>
         </div>
       </div>
     );

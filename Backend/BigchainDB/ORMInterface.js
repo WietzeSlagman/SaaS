@@ -7,9 +7,9 @@ class ORMInterface {
     constructor() {
         // console.log(bdbOrm.default())
         this.bdbOrm = new bdbOrm.default(DB_ENDPOINT, {
-            appId: 'DRONECONNECT',
-            appKey: 'CLICK CLICK UNLOCK'
-        })
+            app_id: 'DRONECONNECT',
+            app_key: 'CLICK CLICK UNLOCK'
+        });
 
         this.bdbOrm.define("droneModel", {
             id: String,
@@ -40,7 +40,7 @@ class ORMInterface {
         // console.log(keypair, data,type)
         return this.bdbOrm[type].create({
             keypair: keypair,
-            data: {poep: 'poep'}
+            data: data
         }).then(object => {
             return object;
         }).catch((e) => {
@@ -54,7 +54,7 @@ class ORMInterface {
             return objects;
         }).catch((e) => {
             return e;
-        });
+        });      
     }
 
     append(id, keypair, data, type) {
@@ -68,7 +68,6 @@ class ORMInterface {
             return e;
         });
     }
-
 }
 
 module.exports = new ORMInterface()
