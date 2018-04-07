@@ -3,16 +3,16 @@
 }
 
 .pulse {
-  margin:100px;
   display: block;
   width: 18px;
   height: 18px;
-  border-radius: 50%;
+  border-radius: 100%;
   background: red;
   cursor: pointer;
   box-shadow: 0 0 0 rgba(204,169,44, 0.4);
   animation: pulse 2s infinite;
 }
+
 .pulse:hover {
   animation: none;
 }
@@ -43,6 +43,6 @@
   }
 }
 
-/*.gmnoprint, .gmnoscreen, .gm-style-cc {
+.gmnoprint, .gmnoscreen, .gm-style-cc {
   display: none!important;
-}*/
+}

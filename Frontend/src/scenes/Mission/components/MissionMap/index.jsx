@@ -18,7 +18,7 @@ function getWorldCoords(gridBounds, gridCoords) {
 const getPixelPositionOffset = (width, height) => ({
   x: -(width / 2),
   y: -(height / 2),
-})
+});
 
 function MissionMap(props) {
   const { gridBounds, center, markers, onMarkerClick } = props;
@@ -37,20 +37,17 @@ function MissionMap(props) {
       }}
       clickableIcons
     >
-
-
       {markers.map((marker) => {
         const { coords } = marker;
         return (
-
-            <OverlayView
-              position={getWorldCoords(gridBounds, coords)}
-              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              getPixelPositionOffset={getPixelPositionOffset}
-            >
-            <span className="pulse" onClick={(evt) => onMarkerClick(evt, marker)}></span>
-            </OverlayView>
-
+          <OverlayView
+            key={marker.id}
+            position={getWorldCoords(gridBounds, coords)}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+            getPixelPositionOffset={getPixelPositionOffset}
+          >
+          <span className="pulse" onClick={(e) => onMarkerClick(marker)} />
+          </OverlayView>
         );
       })}
     </GoogleMap>

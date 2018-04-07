@@ -6,7 +6,6 @@ import './index.css';
 class DroneInfo extends React.PureComponent {
   render() {
     const { id, type, percentage } = this.props;
-    console.log(percentage);
     return (
       <div className="DroneInfo">
         <div className="DroneInfo-inner">

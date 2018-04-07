@@ -1,2 +1,3 @@
+export const INIT_MISSION = 'INIT_MISSION';
 export const SET_FOCUSED_DRONE = 'SET_FOCUSED_DRONE';
 export const SET_DRONES = 'SET_DRONES';
