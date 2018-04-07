@@ -32,7 +32,7 @@
     transition: all .4s ease-in-out;
 }
 .grow:hover > .Category-title {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .grow:hover > .Overlay {
