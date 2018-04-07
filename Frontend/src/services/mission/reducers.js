@@ -1,27 +1,30 @@
 import { fromJS, List, Map } from 'immutable';
 import * as types from './types';
 
-function focusedDrone(state = null, action) {
-  const { type, id } = action;
+function mission(state = null, action) {
+  const { type, id, drones = [], focusedDrone } = action;
   switch (type) {
+    case types.INIT_MISSION:
+      return {
+        id,
+        focusedDrone,
+        drones,
+      };
     case types.SET_FOCUSED_DRONE:
-      return id;
-    default:
-      return state;
-  }
-}
-
-function drones(state = [], action) {
-  const { type, drones } = action;
-  switch (type) {
+      return {
+        ...state,
+        focusedDrone,
+      };
     case types.SET_DRONES:
-      return drones;
+      return {
+        ...state,
+        drones,
+      };
     default:
       return state;
   }
 }
 
 export default {
-  focusedDrone,
-  drones,
+  mission,
 };

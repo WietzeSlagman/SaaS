@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { immutableRenderDecorator } from 'react-immutable-render-mixin';
-import { setDrones, setFocusedDrone } from 'services/mission/actions';
-import { getFocusedDrone } from 'services/mission/selectors';
+import { initMission, setDrones, setFocusedDrone } from 'services/mission/actions';
+import { getDrones, getFocusedDrone } from 'services/mission/selectors';
 import MissionMap from './components/MissionMap';
 import DronesOverview from './components/DronesOverview';
 import DroneInfo from './components/DroneInfo';
@@ -69,19 +70,63 @@ const DRONES = [
   },
 ];
 
+const propTypes = {
+  // Injected by React Router
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }).isRequired,
+  focusedDrone: PropTypes.string,
+  drones: PropTypes.arrayOf(PropTypes.object),
+};
+
+const defaultProps = {
+  focusedDrone: null,
+  drones: null,
+}
+
 class Mission extends React.PureComponent {
   constructor(props) {
     super(props);
-    props.setDrones(DRONES);
     this.handleDroneClick = this.handleDroneClick.bind(this);
   }
 
-  handleDroneClick(event, marker) {
+  componentDidMount() {
+    const id = this.props.match.params.id;
+    this.props.initMission({ id });
+    setInterval(() => this.fetchMission(id), 100);
+  }
+
+  async fetchMission(id) {
+    try {
+      const res = await fetch(`http://.../api/retrieveMission`, {
+        method: 'POST',
+        body: JSON.stringify({ id }),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+      });
+      console.log('retrieved mission', res.json());
+      // const drones;
+      this.props.setDrones([]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  handleDroneClick(marker) {
     this.props.setFocusedDrone(marker.id);
   }
 
   render() {
-    const { drones, focusedDrone } = this.props;
+    const { mission, focusedDrone } = this.props;
+
+    if (!mission) {
+      return <div>no mission data</div>;
+    }
+
+    const drones = mission.drones;
 
     return (
       <div className="Mission">
@@ -90,12 +135,7 @@ class Mission extends React.PureComponent {
         />
         {focusedDrone && <DroneInfo {...focusedDrone} />}
         <MissionMap
-          gridBounds={{
-            north: 63.269234,
-            south: 62.868054,
-            east: -150.132029,
-            west: -151.983226
-          }}
+          gridBounds={DENALI_MISSION.bounds}
           center={DENALI_MISSION.center}
           markers={drones}
           onMarkerClick={this.handleDroneClick}
@@ -106,19 +146,15 @@ class Mission extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  const {
-    activeDrone,
-    drones,
-  } = state;
-
   return {
+    mission: state.mission,
     focusedDrone: getFocusedDrone(state),
-    drones,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    initMission: (data) => dispatch(initMission(data)),
     setDrones: (drones) => dispatch(setDrones(drones)),
     setFocusedDrone: (id) => dispatch(setFocusedDrone(id)),
   };

@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 import { Map } from 'immutable';
 
-export const getFocusedDroneId = state => state.focusedDrone;
-export const getDrones = state => state.drones;
+export const getFocusedDroneId = state => state.mission && state.mission.focusedDrone;
+export const getDrones = state => state.mission && state.mission.drones;
 
 /**
  *
