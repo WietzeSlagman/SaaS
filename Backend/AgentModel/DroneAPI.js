@@ -309,6 +309,17 @@ class Drone {
     }
 }
 
-var d  = new Drone("test", {x: 0, y:0})
+// var d  = new Drone("test", {x: 0, y:0})
 
-// module.exports = Drone
+// d.setStateBigchain()
+
+// d.goto({x: 0, y: -400}).then(() => {
+//     console.log("finished");
+//     d.goto({x:0, y:0}).then(() => {
+//         console.log("finished2");
+//     })
+// })
+
+
+module.exports = Drone
+

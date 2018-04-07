@@ -1,32 +1,51 @@
 const BigchainDB    = require('../BigchainDB/ORMInterface');
 
 class Grid {
-    constructor(type, size, drones={}) {
+    constructor(name = 'SEARCHANDRESCUE', size, drones={}) {
         this.keypair = BigchainDB.createKeyPair();
-        this.type = type;
+        this.name = name;
         this.sizeX = size.x;
         this.sizeY = size.y;
         this.drones = drones;
         this.grid = this.createGrid(size);
 
         this.data = {
-            type: this.type,
+            name: this.name,
             size: this.size,
             grid: this.grid,
-            name: 'Weekveel',
             drones: drones
         }
 
+        console.log('we griddin')
         // console.log(this.data)
-        console.log(this.keypair)
         BigchainDB.create(this.keypair, this.data, 'gridModel').then((grid) => {
-            this.id = grid.id
-            console.log(grid.data, grid.id, grid)
 
+            this.id = grid.id;
+            console.log(grid.data, grid.id, grid);
 
+            this.updateGrid();
         }).catch((e) => {
             console.log(e)
         });
+    }
+
+    updateGrid() {
+        console.log('updateGrid')
+        BigchainDB.retrieve('', 'droneModel').then(drones => { 
+            console.log(drones)
+            drones = drones.map(drone => {
+                this.grid[drone.location.x][drone.location.y].drone = drone.id;
+                this.grid[drone.location.x][drone.location.y].object = drone.object_detected;
+                return drone.id
+            })
+
+
+            this.data.grid = this.grid;
+            this.data.drones = drones;
+            BigchainDB.append(this.id, this.keypair, this.data, 'gridModel');
+        });
+
+        setTimeout(this.updateGrid.bind(this), 1000*10)
     }
 
     createGrid(size) {
