@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 import { Route } from 'react-router'
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
+import { reducers as missionReducers} from 'services/mission';
 
 import 'normalize.css';
 import './index.css';
@@ -23,10 +24,11 @@ const middleware = routerMiddleware(history)
 // Also apply our middleware for navigating
 const store = createStore(
   combineReducers({
+    ...missionReducers,
     router: routerReducer
   }),
   applyMiddleware(middleware)
-)
+);
 
 ReactDOM.render(
   <Provider store={store}>
