@@ -22,7 +22,17 @@ app.use(cors());
 app.post('/api/createMission', (req, res) => {
     return new Promise((resolve, reject) => {
     	const grid = new Grid('mission', {x: 100, y: 100});
-    	resolve(grid)
+    	resolve(grid);
+    });
+});
+
+app.post('/api/retrieveMission', (req, res) => {
+    return new Promise((resolve, reject) => {
+        //console.log(req.body.id)
+        BigchainDB.retrieve(req.body.id, 'gridModel').then( object => {
+            resolve(grid);
+            console.log(grid);
+        });
     });
 });
 
