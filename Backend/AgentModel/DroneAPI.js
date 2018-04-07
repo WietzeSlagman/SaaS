@@ -9,7 +9,9 @@ class Drone {
     constructor(id, init_location) {
         this.drone = sumo.createClient()
         this.id = id
+
         this.dbid = null
+        this._createDroneBigchain()
 
         this.location = init_location
         this.history = []
