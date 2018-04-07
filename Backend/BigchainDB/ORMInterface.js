@@ -10,7 +10,7 @@ class ORMInterface {
 
         this.bdbOrm.define("droneModel", {
             id: String,
-            location: String,
+            location: Object,
             action: String,
 
             object_detected: Boolean,
@@ -22,7 +22,7 @@ class ORMInterface {
 
         this.bdbOrm.define("gridModel", {
             type: String,
-            location: String,
+            location: Object,
             drones: Object,
             grid: Object,
             name: String
@@ -35,7 +35,7 @@ class ORMInterface {
 
     create(keypair, data, type) {
         return this.bdbOrm[type].create({
-            keypair: id,
+            keypair: keypair,
             data: data
         }).then(object => {
             return object;
