@@ -60,7 +60,9 @@ class Drone {
                 cost:               this.currentBattery - battery,
             }
 
-            var metadata = {}
+            var metadata = {
+                type: "drone_update"
+            }
 
             var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
