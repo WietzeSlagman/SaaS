@@ -1,12 +1,15 @@
 const bdbOrm        = require('bigchaindb-orm');
-const DB_ENDPOINT   = require("const.js").db;
+const DB_ENDPOINT   = require("./const.js").db;
 const driver        = require('bigchaindb-driver')
 
 
 class ORMInterface {
     constructor() {
         // console.log(bdbOrm.default())
-        this.bdbOrm = new bdbOrm.default(DB_ENDPOINT)
+        this.bdbOrm = new bdbOrm.default(DB_ENDPOINT, {
+            appId: 'DRONECONNECT',
+            appKey: 'CLICK CLICK UNLOCK'
+        })
 
         this.bdbOrm.define("droneModel", {
             id: String,
@@ -22,7 +25,7 @@ class ORMInterface {
 
         this.bdbOrm.define("gridModel", {
             type: String,
-            location: Object,
+            size: Object,
             drones: Object,
             grid: Object,
             name: String
@@ -34,12 +37,14 @@ class ORMInterface {
     }
 
     create(keypair, data, type) {
+        // console.log(keypair, data,type)
         return this.bdbOrm[type].create({
             keypair: keypair,
-            data: data
+            data: {poep: 'poep'}
         }).then(object => {
             return object;
         }).catch((e) => {
+            console.log('error', e)
             return e;
         });
     }

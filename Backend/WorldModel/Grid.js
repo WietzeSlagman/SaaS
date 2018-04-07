@@ -9,10 +9,23 @@ class Grid {
         this.drones = drones;
         this.grid = this.createGrid(size);
 
-        BigchainDB.create(this.keypair, this, 'gridModel').then((grid) => {
+        this.data = {
+            type: this.type,
+            size: this.size,
+            grid: this.grid,
+            name: 'Weekveel',
+            drones: drones
+        }
+
+        // console.log(this.data)
+        console.log(this.keypair)
+        BigchainDB.create(this.keypair, this.data, 'gridModel').then((grid) => {
             this.id = grid.id
+            console.log(grid.data, grid.id, grid)
+
+
         }).catch((e) => {
-            console.log()
+            console.log(e)
         });
     }
 
@@ -32,14 +45,25 @@ class Grid {
 
     addDrone(id, location) {
         this.grid[location.x][location.y].drone = id;
+        this.drones.id = location;
+
+        this.data.drones = this.drones;
+        this.data.grid = this.grid;
+        BigchainDB.append(this.id, this.keypair, this.data, 'gridModel');
     }
 
     addObstacle(location) {
         this.grid[location.x][location.y].obstacle = true;
+        
+        this.data.grid = this.grid;
+        BigchainDB.append(this.id, this.keypair, this.data, 'gridModel');
     }
 
     addObject(id, location) {
         this.grid[location.x][location.y].object = id;
+
+        this.data.grid = this.grid;
+        BigchainDB.append(this.id, this.keypair, this.data, 'gridModel');
     }
 
     moveDrone(id, location) {
@@ -49,6 +73,10 @@ class Grid {
         this.drones.id.x = x;
         this.drones.id.y = y;
         this.grid[location.x][location.y].drone = id;
+
+        this.data.grid = this.grid;
+        this.data.drones = this.drones;
+        BigchainDB.append(this.id, this.keypair, this.data, 'gridModel');
     }
 }
 
