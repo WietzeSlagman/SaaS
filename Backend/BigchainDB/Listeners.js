@@ -15,7 +15,7 @@ class Listener {
 
             var tx = data["transaction_id"]
 
-            request(`http://${DB_ENDPOINT.db}transactions/${tx}`, (err, response, body) => {
+            request(`${DB_ENDPOINT.db}transactions/${tx}`, (err, response, body) => {
                 data = JSON.parse(body)
 
                 if (data["metadata"]["type"] in this.on_do) {
