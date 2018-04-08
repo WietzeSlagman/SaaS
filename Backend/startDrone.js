@@ -25,8 +25,12 @@ class DroneWrapper {
 
 
 	listenForActions() {
+		const fun = this.listenForActions.bind(this)
+
 		if (this.done == false) {
 			console.log('Not done, no double spending frient.');
+			setTimeout(fun, 1000 * 10);
+
 			return null
 		}
 
@@ -86,7 +90,6 @@ class DroneWrapper {
 			console.log('Gekke errors dit hoort niet')
 		});
 
-		const fun = this.listenForActions.bind(this)
 		setTimeout(fun, 1000 * 10);
 	}
 
@@ -131,4 +134,4 @@ class DroneWrapper {
 	}
 }
 
-const bla = new DroneWrapper()
+const bla = new DroneWrapper(null, false)
