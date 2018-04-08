@@ -54,20 +54,18 @@ class ORMInterface {
             return objects;
         }).catch((e) => {
             return e;
-        });      
+        });
     }
 
-    append(id, keypair, data, type) {
-        return this.retrieve(id, type).then((asset) => {
-            return asset.append({
-                toPublicKey: id,
-                keypair: keypair,
-                data: data
-            }).then(object => {
-                return object;
-            }).catch((e) => {
-                return e;
-            });
+    append(asset, keypair, data) {
+        return asset.append({
+            toPublicKey: keypair.publicKey,
+            keypair: keypair,
+            data: data
+        }).then(object => {
+            return object;
+        }).catch((e) => {
+            return e;
         });
     }
 }
