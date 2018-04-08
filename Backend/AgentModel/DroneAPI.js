@@ -69,7 +69,6 @@ class Drone {
         }
 
         return dbinterface.create(this.keypair, data, "droneModel").then((drone) => {
-            console.log('askldhasdlj', drone)
             this.dbid = drone.id
             this.bdbDrone = drone
             console.log(chalk.green(`Created drone on BigChainDB ${this.dbid}`));
@@ -88,7 +87,7 @@ class Drone {
                 cost:               this.currentBattery - battery,
                 keypair:            this.keypair,
 
-                type:               "drone_update"
+                type:               "SIM"
             }
 
 
