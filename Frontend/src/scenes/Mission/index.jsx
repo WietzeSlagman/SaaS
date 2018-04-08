@@ -1,3 +1,4 @@
+// var WebSocketClient = require('websocket').client;
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,6 +8,8 @@ import { getDrones, getFocusedDrone } from 'services/mission/selectors';
 import MissionMap from './components/MissionMap';
 import DronesOverview from './components/DronesOverview';
 import DroneInfo from './components/DroneInfo';
+// import { client } from 'websocket';
+import WebSocket from 'isomorphic-ws';
 import './index.css';
 import DENALI_MISSION from './missions/denali.json';
 import { groupDrones } from './util.js';
@@ -89,13 +92,33 @@ const defaultProps = {
 class Mission extends React.PureComponent {
   constructor(props) {
     super(props);
+    // props.setDrones(DRONES);
     this.handleDroneClick = this.handleDroneClick.bind(this);
+    const ws = new WebSocket('ws://192.168.169.56:9985/api/v1/streams/valid_transactions');
+    ws.onopen = function open() {
+      console.log('connected');
+      ws.send(Date.now());
+    };
+    ws.onclose = function close() {
+      console.log('disconnected');
+    };
+    ws.onmessage = function incoming(data) {
+      console.log(`Roundtrip time: ${Date.now() - data} ms`);
+
+      setTimeout(function timeout() {
+        ws.send(Date.now());
+      }, 500);
+    };
   }
 
   componentDidMount() {
-    const id = this.props.match.params.id;
-    this.props.initMission({ id });
-    setInterval(() => this.fetchMission(id), 100);
+    // const id = this.props.match.params.id;
+    // this.props.initMission({ id });
+    // setInterval(() => this.fetchMission(id), 100);
+  }
+
+  handleMessage() {
+
   }
 
   async fetchMission(id) {

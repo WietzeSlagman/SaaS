@@ -36,7 +36,8 @@ ReactDOM.render(
       <div>
         <Header />
         <Route exact path="/" component={Home} />
-        <Route path="/mission/:id" component={Mission} />
+        {/*<Route path="/mission/:id" component={Mission} />*/}
+        <Route path="/mission" component={Mission} />
       </div>
     </ConnectedRouter>
   </Provider>,

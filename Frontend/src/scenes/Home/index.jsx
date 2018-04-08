@@ -16,20 +16,24 @@ class Home extends React.Component {
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  async handleCreate(e) {
-    try {
-      const res = await fetch(`http:// /api/createMission`, {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-      });
-      console.log('created mission', res.json());
-      const resJson = res.json();
-      this.props.history.push({ pathname: `/mission/${resJson.id}` });
-    } catch (err) {
-      console.log(err);
-    }
+  // async handleCreate(e) {
+  //   try {
+  //     const res = await fetch(`http:// /api/createMission`, {
+  //       method: 'POST',
+  //       headers: new Headers({
+  //         'Content-Type': 'application/json'
+  //       }),
+  //     });
+  //     console.log('created mission', res.json());
+  //     const resJson = res.json();
+  //     this.props.history.push({ pathname: `/mission/${resJson.id}` });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+
+  handleCreate() {
+    this.props.history.push({ pathname: '/mission' });
   }
 
   render() {
