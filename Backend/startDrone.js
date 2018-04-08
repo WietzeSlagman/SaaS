@@ -10,6 +10,7 @@ class DroneWrapper {
 		this.checkClosest = this.checkClosest.bind(this);
 		this.done = true;
 
+		this.counter = 0
 
 		if (!simulated) {
 			this.drone = new Drone('SEARCHANDRESCUE_TEST', location);
@@ -63,6 +64,17 @@ class DroneWrapper {
 						console.log('Exploring');
 						if (Math.random() > 0.5) {
 							var newX = this.drone.location.x + 1;
+
+							this.counter += 1
+
+							if (this.counter === 3) {
+								this.drone.object_detected = true
+								this.drone.drone.animationsSpin()
+
+								setTimeout(() => {
+									this.drone.drone.stop()
+								}, 500)
+							}
 
 							if (newX < 100) {
 								this.drone.goto({x: this.drone.location.x + 5, y: this.drone.location.y})
