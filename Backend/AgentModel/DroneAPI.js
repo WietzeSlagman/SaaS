@@ -7,7 +7,7 @@ const fs = require('fs')
 
 const WAITTIME = 100
 const STARTUPTIME = 100
-const MOVEMULT  = 100
+const MOVEMULT  = 1000
 
 class Drone {
     constructor(id, init_location, fake=false) {
@@ -40,7 +40,7 @@ class Drone {
         console.log(chalk.blue(`Trying to connect`));
         this.connected = new Promise(function(resolve, reject) {
             this.drone.connect(() => {
-                console.log(chalk.blue(`Connected to drone ${id}`));
+                console.log(chalk.blue(`Connected to drone ${this.id}`));
                 resolve()
             })
         }.bind(this));
@@ -69,7 +69,6 @@ class Drone {
         }
 
         return dbinterface.create(this.keypair, data, "droneModel").then((drone) => {
-            console.log('askldhasdlj', drone)
             this.dbid = drone.id
             this.bdbDrone = drone
             console.log(chalk.green(`Created drone on BigChainDB ${this.dbid}`));
@@ -88,7 +87,7 @@ class Drone {
                 cost:               this.currentBattery - battery,
                 keypair:            this.keypair,
 
-                type:               "drone_update"
+                type:               "SIM"
             }
 
 
@@ -110,6 +109,8 @@ class Drone {
     }
 
     goto(location) {
+        console.log(chalk.blue("Going to "), location);
+
         return new Promise(function(resolve, reject) {
             if (this.location.x < 0 && location.x >= 0) {
                 var x = location.x + Math.abs(this.location.x)
@@ -330,10 +331,8 @@ class Drone {
 }
 
 // var d  = new Drone("test", {x: 0, y:0})
-
-// d.setStateBigchain()
-
-// d.goto({x: 0, y: -400}).then(() => {
+//
+// d.goto({x: 0, y: 10}).then(() => {
 //     console.log("finished");
 //     d.goto({x:0, y:0}).then(() => {
 //         console.log("finished2");

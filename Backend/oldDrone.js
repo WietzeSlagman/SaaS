@@ -2,11 +2,11 @@ const Drone 		= require('./AgentModel/DroneAPI.js');
 const BigchainDB	= require('./BigchainDB/ORMInterface');
 
 class DroneWrapper {
-	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true, location= {x: Math.random()*100, y:Math.random()*100}) {
+	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true, location= {x: 0, y:0}) {
 		this.createDroneBigchain = this.createDroneBigchain.bind(this);
 		this.listenForActions = this.listenForActions.bind(this);
 		this.checkClosest = this.checkClosest.bind(this);
-		this.done = false;
+
 
 
 		if (!simulated) {
@@ -15,13 +15,7 @@ class DroneWrapper {
 			var goTo = (location) => {
 				console.log('gogo', location)
 				this.drone.location = location;
-				console.log('whatsupmetdata', {
-						location: location,
-						currentBattery: this.drone.currentBattery,
-						id: this.drone.id,
-						action: this.drone.action,
-						keypair: this.drone.keypair
-					})
+
 				this.bdbDrone.append({
 	                toPublicKey: this.drone.keypair.publicKey,
 	                keypair: this.drone.keypair,
@@ -30,14 +24,13 @@ class DroneWrapper {
 						currentBattery: this.drone.currentBattery,
 						id: this.drone.id,
 						action: this.drone.action,
-						keypair: this.drone.keypair
+						keypair: this.drone.keypair,
+						type: 'SIM'
 					}
 	            }).then((updatedDrone) => {
 	            	console.log('updatedDrone', updatedDrone.data)
 	            	this.bdbDrone = updatedDrone;
-	            }).catch((e) => {
-	            	console.log('whyyyyy', e)
-	            })
+	            }).catch(console.log)
 
 				// this.bdbDrone.append(this.drone.dbid, this.drone.keypair, {
 				// 	location: location,
@@ -64,74 +57,42 @@ class DroneWrapper {
 		this.action = 'EXPLORE';
 		this.mission = this.getMission(this.drone.id);
 
-		this.done = true;
 		this.listenForActions();
 	}
 
 	createDroneBigchain() {
         var data = {
-            id: this.drone.id,
+            id: this.id,
             type: "create_drone"
         }
 
-        console.log(this.drone.keypair, data)
-
         BigchainDB.create(this.drone.keypair, data, "droneModel").then((drone) => {
-        	// if (drone.hasOwnProperty('errno') && errno == 'ECONNRESET') {
-        	// 	console.log('shit fucked')
-        	// } else {
-        		
-	        // 	this.dbid = drone.id
-	        // 	this.bdbDrone = drone;
-	        // 	console.log(this.dbid, drone.data, drone._schema.id())
-        	// }
+        	this.dbid = drone.id
+        	this.bdbDrone = drone;
+        	console.log(this.dbid, drone.data, drone._schema.id())
 
-        }).catch((e) => {
-        	console.log('hmmm', e)
         });
     }
 
 
 	listenForActions() {
-		const fun = this.listenForActions.bind(this)
-
-		if (this.done === false) {
-			console.log('not done')
-			setTimeout(fun, 1000 * 1);
-			return null;
-		}
-
-
 		console.log('listener called', this.dbid)
-		this.done = false;
 		let prom =  new Promise((resolve, reject) => { 
 			BigchainDB.retrieve('', 'droneModel').then(drones => {
-				var detected = false;
-				if (drones.hasOwnProperty('errno') && drones.errno == 'ECONNRESET') {
-					console.log('feestje')
-					detected = false;
-				} else {
-					console.log('niet feestje')
-					detected = this.checkDetected(drones);
-				}
-
-				console.log('we retrievin', detected)
+				console.log('we retrievin')
+				// const detected = this.checkDetected(drones);
+				const detected = false;
 				if (this.drone.currentBattery < 10) {
 					console.log('Low battery');
 					resolve();
 				} else if (detected) {
 					console.log('Detected');
+					const closest = this.checkClosest(drones, detected);
 
-					if (this.action !== 'DETECTED') {
-						if (this.drone.location.x > detected.x) {
-							this.drone.location.x -= 1
-						} else if (this.drone.location.x < detected.x) {
-							this.drone.location.x += 1
-						} else if (this.drone.location.y > detected.y) {
-							this.drone.location.y -= 1
-						}  else if (this.drone.location.y < detected.y) {
-							this.drone.location.y += 1
-						}
+					if (closest) {
+						this.drone.goTo(detected).then(() => {
+							resolve();
+						}).catch(e => reject(e));
 					}
 
 					resolve();
@@ -142,7 +103,7 @@ class DroneWrapper {
 						console.log('Exploring');
 						if (Math.random() > 0.5) {
 							var newX = this.drone.location.x + 1;
-							console.log('we moving to ', newX)
+
 							if (newX < 100) {
 								this.drone.goTo({x: this.drone.location.x + 1, y: this.drone.location.y})
 							} else {
@@ -150,7 +111,6 @@ class DroneWrapper {
 							}
 						} else {
 							var newY = this.drone.location.y + 1;
-							console.log('we moving to ', newY)
 
 							if (newY < 100) {
 								this.drone.goTo({x: this.drone.location.x, y: this.drone.location.y + 1})
@@ -166,22 +126,10 @@ class DroneWrapper {
 				}
 
 			});
-		}).then(() => {
-			console.log('Listener done');
-			this.done = true
-		}).catch((e) => {
-			BigchainDB.retrieve(this.bdbDrone.id).then((drone) => {
-				this.done = true;
-				this.bdbDrone = drone;
-			});
 		});
 
-		if (this.done) {
-			setTimeout(fun, 1000 * 10);
-		} else {
-			console.log('not done')
-			setTimeout(fun, 1000 * 1);
-		}
+		const fun = this.listenForActions.bind(this)
+		setTimeout(fun, 1000 * 10);
 	}
 
 	calcDistance(location1, location2) {
@@ -190,17 +138,12 @@ class DroneWrapper {
 		return Math.sqrt(x*x + y*y);
 	}
 
-	checkDetected(drones) {
-		var objectLocation = false;
-		console.log('hier input', drones.errno);
-
+	checkDetected(drones, objectLocation) {
 		drones.map((drone) => {
-			console.log(drone);
 			if (drone.object_detected === true) {
 				objectLocation = drone.location;
 			}
 		});
-
 
 		return objectLocation;
 	}
@@ -231,9 +174,3 @@ class DroneWrapper {
 }
 
 const bla = new DroneWrapper()
-
-// for (var i = 0; i < 10; i++) {
-// 	var newDrone = new DroneWrapper();
-// }
-
-

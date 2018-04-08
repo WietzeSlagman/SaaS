@@ -8,7 +8,6 @@ class FakeDrone extends Drone {
     }
 
     goto(location) {
-        console.log('123')
         this.location = location
         console.log(this.bdbDrone);
         this.setStateBigchain()
