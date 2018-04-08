@@ -92,7 +92,7 @@ const defaultProps = {
 class Mission extends React.PureComponent {
   constructor(props) {
     super(props);
-    // props.setDrones(DRONES);
+    props.setDrones(DRONES);
     this.handleDroneClick = this.handleDroneClick.bind(this);
     const ws = new WebSocket('ws://192.168.169.56:9985/api/v1/streams/valid_transactions');
     ws.onopen = function open() {
@@ -153,10 +153,13 @@ class Mission extends React.PureComponent {
 
     return (
       <div className="Mission">
+      
         <DronesOverview
           items={groupDrones(drones)}
         />
+
         {focusedDrone && <DroneInfo {...focusedDrone} />}
+
         <MissionMap
           gridBounds={DENALI_MISSION.bounds}
           center={DENALI_MISSION.center}

@@ -26,8 +26,8 @@
 
 .DroneInfo-id {
   font-size: 25px;
-  color: #ffb733;
-  text-shadow: 0 1px 6px #ff991b;
+  color: white;
+  text-shadow: 0 1px 6px #1b69ff;
 }
 
 .CircularProgressbar .CircularProgressbar-trail {

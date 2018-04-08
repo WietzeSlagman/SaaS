@@ -46,7 +46,7 @@ function MissionMap(props) {
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
             getPixelPositionOffset={getPixelPositionOffset}
           >
-          <span className="pulse" onClick={(e) => onMarkerClick(marker)} />
+          <span className={`Pulse Pulse-${marker.type.toLowerCase()}`}className="Pulse" onClick={(e) => onMarkerClick(marker)} />
           </OverlayView>
         );
       })}
