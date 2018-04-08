@@ -19,6 +19,7 @@ class Drone {
 
         this.location = init_location
         this.history = []
+        this.action = 'EXPLORE'
 
         this.directions = ["N", "E", "S", "W"]
 
@@ -67,7 +68,8 @@ class Drone {
             type: "create_drone"
         }
 
-        dbinterface.create(this.keypair, data, "droneModel").then((drone) => {
+        return dbinterface.create(this.keypair, data, "droneModel").then((drone) => {
+            console.log('askldhasdlj', drone)
             this.dbid = drone.id
             this.bdbDrone = drone
             console.log(chalk.green(`Created drone on BigChainDB ${this.dbid}`));
