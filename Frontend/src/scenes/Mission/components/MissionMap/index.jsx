@@ -10,8 +10,8 @@ function getWorldCoords(gridBounds, gridCoords) {
   const vertStepSize = Math.abs(gridBounds.south - gridBounds.north) / GRID_STEPS;
   const horzStepSize = Math.abs(gridBounds.east - gridBounds.west) / GRID_STEPS;
   return {
-    lat: gridBounds.north - (vertStepSize * gridCoords.y),
-    lng: gridBounds.west + (horzStepSize * gridCoords.x),
+    lat: gridBounds.north - (vertStepSize * gridCoords.get('y')),
+    lng: gridBounds.west + (horzStepSize * gridCoords.get('x')),
   };
 }
 
@@ -38,10 +38,10 @@ function MissionMap(props) {
       clickableIcons
     >
       {markers.map((marker) => {
-        const { coords } = marker;
+        const coords = marker.get('location');
         return (
           <OverlayView
-            key={marker.id}
+            key={marker.get('id')}
             position={getWorldCoords(gridBounds, coords)}
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
             getPixelPositionOffset={getPixelPositionOffset}

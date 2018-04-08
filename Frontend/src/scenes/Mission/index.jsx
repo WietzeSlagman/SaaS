@@ -3,12 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { immutableRenderDecorator } from 'react-immutable-render-mixin';
-import { initMission, setDrones, setFocusedDrone } from 'services/mission/actions';
+import { initMission, setSingleDrone, setDrones, setFocusedDrone } from 'services/mission/actions';
 import { getDrones, getFocusedDrone } from 'services/mission/selectors';
 import MissionMap from './components/MissionMap';
 import DronesOverview from './components/DronesOverview';
 import DroneInfo from './components/DroneInfo';
-// import { client } from 'websocket';
 import WebSocket from 'isomorphic-ws';
 import './index.css';
 import DENALI_MISSION from './missions/denali.json';
@@ -94,6 +93,7 @@ class Mission extends React.PureComponent {
     super(props);
     // props.setDrones(DRONES);
     this.handleDroneClick = this.handleDroneClick.bind(this);
+
     const ws = new WebSocket('ws://192.168.169.56:9985/api/v1/streams/valid_transactions');
     ws.onopen = function open() {
       console.log('connected');
@@ -102,44 +102,35 @@ class Mission extends React.PureComponent {
     ws.onclose = function close() {
       console.log('disconnected');
     };
-    ws.onmessage = function incoming(data) {
-      console.log(`Roundtrip time: ${Date.now() - data} ms`);
+    async function handleMessage(data) {
+      const json = JSON.parse(data);
+      try {
+        const id = json.transaction_id;
+        const res = await fetch(`http://192.168.169.56:9984/api/v1/transactions/${id}`);
+        const jsonRes = await res.json();
+        if (jsonRes.asset && jsonRes.asset.id) {
+          const assetData = {
+            ...jsonRes.metadata,
+            id: jsonRes.asset.id,
+          };
+          props.setSingleDrone(assetData);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
 
+    ws.onmessage = function incoming(msg) {
+      console.log(msg);
+      handleMessage(msg.data);
       setTimeout(function timeout() {
         ws.send(Date.now());
       }, 500);
     };
   }
 
-  componentDidMount() {
-    // const id = this.props.match.params.id;
-    // this.props.initMission({ id });
-    // setInterval(() => this.fetchMission(id), 100);
-  }
-
-  handleMessage() {
-
-  }
-
-  async fetchMission(id) {
-    try {
-      const res = await fetch(`http://.../api/retrieveMission`, {
-        method: 'POST',
-        body: JSON.stringify({ id }),
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-      });
-      console.log('retrieved mission', res.json());
-      // const drones;
-      this.props.setDrones([]);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   handleDroneClick(marker) {
-    this.props.setFocusedDrone(marker.id);
+    this.props.setFocusedDrone(marker.get('id'));
   }
 
   render() {
@@ -156,7 +147,7 @@ class Mission extends React.PureComponent {
         <DronesOverview
           items={groupDrones(drones)}
         />
-        {focusedDrone && <DroneInfo {...focusedDrone} />}
+        {focusedDrone && <DroneInfo {...focusedDrone.toJS()} />}
         <MissionMap
           gridBounds={DENALI_MISSION.bounds}
           center={DENALI_MISSION.center}
@@ -178,6 +169,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     initMission: (data) => dispatch(initMission(data)),
+    setSingleDrone: (drone) => dispatch(setSingleDrone(drone)),
     setDrones: (drones) => dispatch(setDrones(drones)),
     setFocusedDrone: (id) => dispatch(setFocusedDrone(id)),
   };
@@ -186,4 +178,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Mission);
+)(immutableRenderDecorator(Mission));
