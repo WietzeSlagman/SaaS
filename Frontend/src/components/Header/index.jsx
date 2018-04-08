@@ -1,32 +1,25 @@
 import React from 'react';
 import Logo from 'components/Logo';
+import { withRouter } from 'react-router';
 import './index.css';
 
-var showName=false
-var showSlogan=false
-
 class Header extends React.Component {
+  render() {
+    const { location } = this.props;
+    let showName = false;
+    let showSlogan = false;
 
-    componentWillMount(){
-        if(window.location.pathname !== "/"){
-            showName=false
-            showSlogan=false
-            console.log("path",window.location.pathname)
-        } else {
-            showName=true
-            showSlogan=true
-            console.log("path",window.location.pathname)
-        }
-
+    if (location.pathname === '/') {
+      showName = true;
+      showSlogan = true;
     }
 
-  render() {
     return (
-      <div className="Header"  >
+      <div className="Header">
         <Logo showName={showName} showSlogan={showSlogan} />
       </div>
     );
   }
 }
 
-export default Header;
+export default withRouter(Header);
