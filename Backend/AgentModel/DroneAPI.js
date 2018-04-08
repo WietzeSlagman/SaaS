@@ -4,9 +4,10 @@ const chalk = require('chalk');
 const blobUtil = require('blob-util')
 const fs = require('fs')
 // const cv = require('opencv')
+
 const WAITTIME = 100
 const STARTUPTIME = 100
-
+const MOVEMULT  = 100
 
 class Drone {
     constructor(id, init_location, fake=false) {
@@ -243,7 +244,7 @@ class Drone {
                     resolve()
                 }, WAITTIME)
 
-            }, time + STARTUPTIME)
+            }, time * MOVEMULT + STARTUPTIME)
         }.bind(this));
     }
 
@@ -259,7 +260,7 @@ class Drone {
                     resolve()
                 }, WAITTIME)
 
-            }, time + STARTUPTIME)
+            }, time * MOVEMULT + STARTUPTIME)
         }.bind(this));
     }
 
