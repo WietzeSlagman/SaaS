@@ -40,8 +40,8 @@ class DroneWrapper {
 		let prom =  new Promise((resolve, reject) => {
 			BigchainDB.retrieve('', 'droneModel').then(drones => {
 				console.log('we retrievin')
-				const detected = this.checkDetected(drones);
-				// const detected = false;
+				// const detected = this.checkDetected(drones);
+				const detected = false;
 				if (this.drone.currentBattery < 10) {
 					console.log('Low battery');
 					resolve();
