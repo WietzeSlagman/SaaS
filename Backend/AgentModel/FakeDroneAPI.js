@@ -8,9 +8,12 @@ class FakeDrone extends Drone {
     }
 
     goto(location) {
-        this.location = location
-        console.log(this.bdbDrone);
-        this.setStateBigchain()
+        return new Promise(function(resolve, reject) {
+            console.log(chalk.blue("Going to "), location);
+            this.location = location
+            this.setStateBigchain()
+            resolve()
+        }.bind(this));
     }
 
     getVideoData() {

@@ -12,6 +12,7 @@ import WebSocket from 'isomorphic-ws';
 import './index.css';
 import DENALI_MISSION from './missions/denali.json';
 import { groupDrones } from './util.js';
+import DB_ENDPOINT from "../../const.js"
 
 const DRONES = [
   {
@@ -94,7 +95,8 @@ class Mission extends React.PureComponent {
     // props.setDrones(DRONES);
     this.handleDroneClick = this.handleDroneClick.bind(this);
 
-    const ws = new WebSocket('ws://192.168.169.56:9985/api/v1/streams/valid_transactions');
+
+    const ws = new WebSocket(DB_ENDPOINT.ws);
     ws.onopen = function open() {
       console.log('connected');
       ws.send(Date.now());
@@ -106,7 +108,7 @@ class Mission extends React.PureComponent {
       const json = JSON.parse(data);
       try {
         const id = json.transaction_id;
-        const res = await fetch(`http://192.168.169.56:9984/api/v1/transactions/${id}`);
+        const res = await fetch(`${DB_ENDPOINT.db}transactions/${id}`);
         const jsonRes = await res.json();
         if (jsonRes.asset && jsonRes.asset.id) {
               const assetData = {

@@ -17,6 +17,7 @@ class Drone {
         this.dbid = null
         this._createDroneBigchain()
 
+        this.object_detected = false
         this.location = init_location
         this.history = []
         this.action = 'EXPLORE'
@@ -28,6 +29,7 @@ class Drone {
 
         // fixed speed 50
         this.speed = 50
+        this.detected = false
 
         if (!fake) {
             this._initDrone()

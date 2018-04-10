@@ -1,16 +1,19 @@
 const Drone 		= require('./AgentModel/DroneAPI.js');
 const FakeDrone		= require('./AgentModel/FakeDroneAPI.js')
-
 const BigchainDB	= require('./BigchainDB/ORMInterface');
+const chalk 		= require('chalk');
+
 
 class DroneWrapper {
-	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true, location= {x: 0, y:0}) {
+	constructor(id = 'SEARCHANDRESCUE_TEST', simulated = true, willDetect = false, location= {x: 0, y:0}) {
 		// this.createDroneBigchain = this.createDroneBigchain.bind(this);
 		this.listenForActions = this.listenForActions.bind(this);
 		this.checkClosest = this.checkClosest.bind(this);
 		this.done = true;
 
 		this.counter = 0
+		this.simulated = simulated
+		this.willDetect = willDetect
 
 		if (!simulated) {
 			this.drone = new Drone('SEARCHANDRESCUE_TEST', location);
@@ -37,24 +40,25 @@ class DroneWrapper {
 
 
 		this.done = false
-		console.log('listener called', this.dbid)
+		console.log('listener called', this.drone.dbid)
 		let prom =  new Promise((resolve, reject) => {
 			BigchainDB.retrieve('', 'droneModel').then(drones => {
 				console.log('we retrievin')
-				// const detected = this.checkDetected(drones);
-				const detected = false;
+				const detected = this.checkDetected(drones);
+				// const detected = false;
 				if (this.drone.currentBattery < 10) {
 					console.log('Low battery');
 					resolve();
 				} else if (detected) {
-					console.log('Detected');
-					const closest = this.checkClosest(drones, detected);
+					console.log(chalk.yellow('Detected'));
+					// const closest = this.checkClosest(drones, detected);
 
-					if (closest) {
-						this.drone.goto(detected).then(() => {
-							resolve();
-						}).catch(e => reject(e));
-					}
+					// if (closest) {
+					this.drone.goto(detected).then(() => {
+						console.log('drone goto detected hij komt hier wel')
+						resolve();
+					}).catch(e => {console.log('drone goto detected shit fucked up', e);reject(e)});
+					// }
 
 					resolve();
 				} else {
@@ -64,17 +68,6 @@ class DroneWrapper {
 						console.log('Exploring');
 						if (Math.random() > 0.5) {
 							var newX = this.drone.location.x + 1;
-
-							this.counter += 1
-
-							if (this.counter === 3) {
-								this.drone.object_detected = true
-								this.drone.drone.animationsSpin()
-
-								setTimeout(() => {
-									this.drone.drone.stop()
-								}, 500)
-							}
 
 							if (newX < 100) {
 								this.drone.goto({x: this.drone.location.x + 5, y: this.drone.location.y})
@@ -90,6 +83,27 @@ class DroneWrapper {
 								this.drone.goto({x: this.drone.location.x, y: this.drone.location.y - 5})
 							}
 						}
+
+						this.counter += 1
+						console.log(this.counter);
+
+						if (this.counter > 2 && this.willDetect) {
+							this.drone.object_detected = true
+							this.drone.action = "FOUND"
+
+							this.willDetect = false
+
+							if (!this.simulated) {
+								this.drone.drone.animationsSpin()
+
+								setTimeout(() => {
+									this.drone.drone.stop()
+								}, 1000)
+							}
+
+							console.log(chalk.blue("Detected"));
+						}
+
 						resolve();
 					} else {
 						console.log('No action found', this.drone.action);
@@ -97,9 +111,11 @@ class DroneWrapper {
 					}
 				}
 
+			}).catch((e) => {
+				console.log(chalk.red('waar de fuck zijn mijn drones???'), e);
 			});
 		}).then(() => this.done = true).catch((e) => {
-			console.log('Gekke errors dit hoort niet')
+			console.log(chalk.red('Gekke errors dit hoort niet'));
 		});
 
 		setTimeout(fun, 1000 * 10);
@@ -111,13 +127,17 @@ class DroneWrapper {
 		return Math.sqrt(x*x + y*y);
 	}
 
-	checkDetected(drones, objectLocation) {
+	checkDetected(drones) {
+		console.log(chalk.yellow('welloe drones ik zweer'), drones.length)
+
+		var objectLocation = false;
 		drones.map((drone) => {
-			if (drone.object_detected === true) {
-				objectLocation = drone.location;
+			if (drone.data.object_detected === true) {
+				objectLocation = drone.data.location;
 			}
 		});
 
+		console.log(chalk.green("FOUND LOCATION: "), objectLocation);
 		return objectLocation;
 	}
 
@@ -146,4 +166,25 @@ class DroneWrapper {
 	}
 }
 
-const bla = new DroneWrapper(null, false)
+module.exports = DroneWrapper
+
+if (require.main === module) {
+	var random_loc = () => {
+		return {
+			x: Math.round(Math.random() * 100),
+			y: Math.round(Math.random() * 100)
+		}
+	}
+
+	var args = process.argv.slice(2)
+	var withReal = args.length >= 2 && args[1] == "true" ? true : false
+
+	for (var i = 0; i < parseInt(args[0]); i++) {
+		if (i == 0) {
+			new DroneWrapper(null, !withReal, true, random_loc())
+		}
+
+		new DroneWrapper(null, true, false, random_loc())
+	}
+
+}

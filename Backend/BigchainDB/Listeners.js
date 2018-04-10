@@ -4,7 +4,7 @@ const request = require('request');
 
 const DB_ENDPOINT = require("./const.js")
 
-const ws = new WebSocket("ws://" + DB_ENDPOINT.ws + "streams/valid_transactions")
+const ws = new WebSocket(DB_ENDPOINT.ws)
 
 class Listener {
     constructor() {
