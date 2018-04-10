@@ -1,7 +1,7 @@
 import { chain, groupBy, toPairs, zipObject, value } from 'lodash';
 
 export function groupDrones(drones) {
-  return chain(drones)
+  return chain(drones.toJS())
     .groupBy('type')
     .toPairs()
     .map((currentItem) => {

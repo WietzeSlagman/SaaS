@@ -9,8 +9,7 @@ const STARTUPTIME = 100
 
 
 class Drone {
-    constructor(id, init_location) {
-        this.drone = sumo.createClient()
+    constructor(id, init_location, fake=false) {
         this.id = id
 
         this.keypair = dbinterface.createKeyPair()
@@ -25,6 +24,17 @@ class Drone {
         // Initial facing north
         this.facing = this.directions[0]
 
+        // fixed speed 50
+        this.speed = 50
+
+        if (!fake) {
+            this._initDrone()
+        }
+    }
+
+    _initDrone() {
+        this.drone = sumo.createClient()
+
         console.log(chalk.blue(`Trying to connect`));
         this.connected = new Promise(function(resolve, reject) {
             this.drone.connect(() => {
@@ -38,11 +48,7 @@ class Drone {
             this.currentBattery = battery
         })
 
-        // fixed speed 50
-        this.speed = 50
-
         this.movement = this.createMovementControls()
-
     }
 
     getBatteryLifePromise() {
@@ -60,7 +66,11 @@ class Drone {
             type: "create_drone"
         }
 
-        this.dbid = dbinterface.create(this.keypair, data, "droneModel").id
+        dbinterface.create(this.keypair, data, "droneModel").then((drone) => {
+            this.dbid = drone.id
+            this.bdbDrone = drone
+            console.log(chalk.green(`Created drone on BigChainDB ${this.dbid}`));
+        })
     }
 
     setStateBigchain() {
@@ -73,14 +83,16 @@ class Drone {
                 object_detected:    this.object_detected,
                 battery:            battery,
                 cost:               this.currentBattery - battery,
+                keypair:            this.keypair,
+
                 type:               "drone_update"
             }
 
-            dbinterface.append(this.dbid, this.keypair, data, "droneModel")
-            // var signedTx = dbinterface.makeSignedTx(assetdata, metadata, this.keypair)
 
-            console.log(chalk.yellow(`Posted new transaction: ${signedTx.id}`));
-            // dbinterface.postTransaction(signedTx)
+            dbinterface.append(this.bdbDrone, this.keypair, data).then((updatedDrone) => {
+                this.bdbDrone = updatedDrone;
+                console.log(chalk.yellow(`Posted new transaction: ${updatedDrone.id}`));
+            })
 
             this.currentBattery = battery
         })
@@ -113,6 +125,8 @@ class Drone {
                     console.log(chalk.blue(`Finished move to: (${location.x}, ${location.y})`));
 
                     this.location = location
+                    this.setStateBigchain()
+
                     setTimeout(() => {
                         resolve()
                     }, WAITTIME*10)

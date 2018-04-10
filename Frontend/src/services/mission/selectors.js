@@ -15,6 +15,6 @@ export const getFocusedDrone = createSelector(
       return undefined;
     }
 
-    return drones.find((drone) => drone.id === focusedDroneId);
+    return drones.find((drone) => drone.get('id') === focusedDroneId);
   },
 );

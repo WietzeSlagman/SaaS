@@ -4,7 +4,6 @@ import './index.css';
 class DronesOverview extends React.Component {
   render() {
     const { items } = this.props;
-
     return (
       <div className="DronesOverview">
         <div className="DronesOverview-header">Ecosystem</div>

@@ -10,8 +10,8 @@ function getWorldCoords(gridBounds, gridCoords) {
   const vertStepSize = Math.abs(gridBounds.south - gridBounds.north) / GRID_STEPS;
   const horzStepSize = Math.abs(gridBounds.east - gridBounds.west) / GRID_STEPS;
   return {
-    lat: gridBounds.north - (vertStepSize * gridCoords.y),
-    lng: gridBounds.west + (horzStepSize * gridCoords.x),
+    lat: gridBounds.north - (vertStepSize * gridCoords.get('y')),
+    lng: gridBounds.west + (horzStepSize * gridCoords.get('x')),
   };
 }
 
@@ -38,15 +38,17 @@ function MissionMap(props) {
       clickableIcons
     >
       {markers.map((marker) => {
-        const { coords } = marker;
+        const coords = marker.get('location');
+        const typeAction = marker.get('type') || marker.get('action');
+        const detected = marker.get('object_detected');
         return (
           <OverlayView
-            key={marker.id}
+            key={marker.get('id')}
             position={getWorldCoords(gridBounds, coords)}
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
             getPixelPositionOffset={getPixelPositionOffset}
           >
-          <span className={`Pulse Pulse-${marker.type.toLowerCase()}`}className="Pulse" onClick={(e) => onMarkerClick(marker)} />
+          <span className={`Pulse Pulse-${typeAction.toLowerCase()} Pulse-${detected ? 'detected' : 'not-detected'}`} onClick={(e) => onMarkerClick(marker)} />
           </OverlayView>
         );
       })}
