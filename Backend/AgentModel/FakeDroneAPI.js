@@ -14,7 +14,7 @@ class FakeDrone extends Drone {
             });
         }
 
-        if (Math.random() > 0.5) {
+        if (Math.abs(location.x - this.location.x) > Math.abs(location.y - this.location.y)) {
             if (location.x > this.location.x) {
                 location.x = this.location.x + 5
                 location.y = this.location.y
