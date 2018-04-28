@@ -6,7 +6,7 @@ services:
   frontendnode:
       image: node
       ports:
-          -"3000:3000"
+          - "3000:3000"
   mongodb:
     image: mongo:3.4.13
     ports:
