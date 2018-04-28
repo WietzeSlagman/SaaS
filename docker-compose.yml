@@ -1,9 +1,10 @@
 version: '2.1'
 
 services:
-  frontendnode:
+  saas_node:
+    image: saas_node
     build:
-      context: "."
-      dockerfile: DockerfileNode
+      context: "./Frontend"
+      dockerfile: Frontend/DockerfileNode
     ports:
         - 3000:3000
