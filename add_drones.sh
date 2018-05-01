@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run saas_drone # FIXME
+docker run --network bigchaindb_default saas_drone  # FIXME

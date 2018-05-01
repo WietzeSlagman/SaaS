@@ -4,6 +4,7 @@ cd ./data
 
 sudo rm -r *
 
+# FIXME not right version
 git clone https://github.com/bigchaindb/bigchaindb.git
 
 cd bigchaindb

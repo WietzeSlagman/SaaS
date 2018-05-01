@@ -5,6 +5,7 @@ cd data/bigchaindb
 screen -S SaaS-Bigchaindb -dm bash;
 screen -S SaaS-Bigchaindb -X stuff 'make run^M';
 
+sleep 10
 
 cd ../SaaS
 
