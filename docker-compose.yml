@@ -8,3 +8,8 @@ services:
       dockerfile: Frontend/DockerfileNode
     ports:
         - 3000:3000
+
+networks:
+  default:
+    external: 
+      name: bigchaindb_default
