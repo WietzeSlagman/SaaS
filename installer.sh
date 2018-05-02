@@ -2,17 +2,19 @@
 
 cd ./data
 
-sudo rm -r *
+sudo rm -r SaaS/*
+# sudo rm -r *
 
 # FIXME not right version
-git clone https://github.com/bigchaindb/bigchaindb.git
+# git clone https://github.com/bigchaindb/bigchaindb.git
 
 cd bigchaindb
 
 sed -i '1s/.*/FROM python:3.6/' Dockerfile-dev
 sed -i '2s/.*//' Dockerfile-dev
 
-docker build -f Dockerfile-dev .
+# FIXME build command doesnt seem to work
+# docker build -f Dockerfile-dev . -t bigchaindb_bigchaindb
 
 cd ..
 
