@@ -15,7 +15,9 @@ class Drone {
 
         this.keypair = dbinterface.createKeyPair()
         this.dbid = null
-        this._createDroneBigchain()
+        this.creation_prom = new Promise(function(resolve, reject) {
+            resolve(this._createDroneBigchain())
+        }.bind(this));
 
         this.object_detected = false
         this.location = init_location

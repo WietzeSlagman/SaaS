@@ -5,6 +5,8 @@ class FakeDrone extends Drone {
     constructor(id, init_location) {
         super(id, init_location, true)
         this.currentBattery = 10
+
+        this.goto = this.goto.bind(this)
     }
 
     goto(location) {
